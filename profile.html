@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Profile | AttendX</title>
+
+<link rel="icon"
+href="assets/logo.png">
+
+<link rel="stylesheet"
+href="css/style.css">
+
+</head>
+
+
+<body>
+
+<div id="particles"></div>
+
+
+<header class="navbar">
+
+<a href="index.html" class="brand">
+
+<img src="assets/logo.png">
+
+<span>
+Attend<span>X</span>
+</span>
+
+</a>
+
+
+<nav>
+
+<a href="index.html">Home</a>
+
+<a href="calculator.html">Calculator</a>
+
+<a href="profile.html">Profile</a>
+
+<a href="about.html">About</a>
+
+</nav>
+
+</header>
+
+
+<main class="page">
+
+<div class="panel">
+
+
+<div class="profile-header">
+
+<img
+id="profileImage"
+class="profile-photo"
+src="assets/avatars/avatar1.png">
+
+
+<div>
+
+<p class="eyebrow">
+STUDENT PROFILE
+</p>
+
+<h1 id="profileName">
+Student
+</h1>
+
+<p id="profileClass">
+Class
+</p>
+
+</div>
+
+</div>
+
+
+<h3>
+Choose your avatar
+</h3>
+
+
+<div class="avatar-grid">
+
+
+<img
+class="avatar-choice"
+src="assets/avatars/avatar1.png"
+onclick="changeAvatar('assets/avatars/avatar1.png')">
+
+
+<img
+class="avatar-choice"
+src="assets/avatars/avatar2.png"
+onclick="changeAvatar('assets/avatars/avatar2.png')">
+
+
+<img
+class="avatar-choice"
+src="assets/avatars/avatar3.png"
+onclick="changeAvatar('assets/avatars/avatar3.png')">
+
+
+</div>
+
+
+<br><br>
+
+
+<button
+class="primary-btn"
+onclick="logout()">
+
+Reset Profile
+
+</button>
+
+
+</div>
+
+</main>
+
+
+<script src="js/app.js"></script>
+
+<script src="js/profile.js"></script>
+
+</body>
+
+</html>
