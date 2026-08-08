@@ -1263,3 +1263,16 @@ footer {
     }
 
 }
+.brand-name > span {
+    color: inherit;
+    text-shadow: none;
+}
+
+.brand-name .glow-t {
+    color: var(--sky);
+
+    text-shadow:
+        0 0 8px rgba(105, 217, 255, 0.8),
+        0 0 20px rgba(105, 217, 255, 0.6),
+        0 0 35px rgba(105, 217, 255, 0.35);
+}
