@@ -1156,8 +1156,8 @@ footer {
 
     display: block;
 
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
 
     object-fit: cover;
 
@@ -1171,7 +1171,6 @@ footer {
         0 0 40px rgba(105,217,255,.25);
 
 }
-
 
 
 .about-content {
