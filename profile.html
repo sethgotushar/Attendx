@@ -8,7 +8,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>Profile | AttendX</title>
+<title>Choose Avatar | AttendX</title>
 
 <link rel="icon"
 href="assets/logo.png">
@@ -24,13 +24,13 @@ href="css/style.css">
 <div id="particles"></div>
 
 
-<!-- ================= NAVBAR ================= -->
-
 <header class="navbar">
 
 <a href="index.html" class="brand">
 
-<img src="assets/logo.png" alt="AttendX Logo">
+<img
+src="assets/logo.png"
+alt="AttendX Logo">
 
 <span>
 At<span>T</span>endX
@@ -41,13 +41,21 @@ At<span>T</span>endX
 
 <nav>
 
-<a href="index.html">Home</a>
+<a href="index.html">
+Home
+</a>
 
-<a href="calculator.html">Calculator</a>
+<a href="calculator.html">
+Calculator
+</a>
 
-<a href="profile.html">Profile</a>
+<a href="profile.html">
+Profile
+</a>
 
-<a href="about.html">About</a>
+<a href="about.html">
+About
+</a>
 
 </nav>
 
@@ -55,14 +63,29 @@ At<span>T</span>endX
 
 
 
-<!-- ================= PROFILE ================= -->
-
 <main class="page">
 
-<div class="panel profile-setup-panel">
+<div class="panel">
 
 
-<!-- PROFILE PREVIEW -->
+<p class="eyebrow">
+FINAL STEP
+</p>
+
+
+<h1>
+Choose Your Avatar
+</h1>
+
+
+<p>
+Your account details are already saved.
+Choose an avatar to complete your AttendX profile.
+</p>
+
+
+
+<!-- ================= PROFILE PREVIEW ================= -->
 
 <div class="profile-header">
 
@@ -79,12 +102,14 @@ alt="Profile Avatar">
 STUDENT PROFILE
 </p>
 
+
 <h1 id="profileName">
 Student
 </h1>
 
+
 <p id="profileClass">
-Target attendance: 75%
+Class • Target: 75%
 </p>
 
 </div>
@@ -93,22 +118,7 @@ Target attendance: 75%
 
 
 
-<!-- ================= SETUP ================= -->
-
-<div class="profile-setup">
-
-<h2>
-Create your <span>AttendX Profile</span>
-</h2>
-
-<p class="profile-description">
-Choose your avatar, enter your name and set the attendance
-criterion you want AttendX to calculate for you.
-</p>
-
-
-
-<!-- ================= AVATAR ================= -->
+<!-- ================= AVATARS ================= -->
 
 <h3>
 Choose your avatar
@@ -119,10 +129,9 @@ Choose your avatar
 
 
 <img
-class="avatar-choice selected-avatar"
+class="avatar-choice"
 src="assets/avatars/avatar1.png"
 data-avatar="assets/avatars/avatar1.png"
-onclick="changeAvatar(this)"
 alt="Avatar 1">
 
 
@@ -130,7 +139,6 @@ alt="Avatar 1">
 class="avatar-choice"
 src="assets/avatars/avatar2.png"
 data-avatar="assets/avatars/avatar2.png"
-onclick="changeAvatar(this)"
 alt="Avatar 2">
 
 
@@ -138,7 +146,6 @@ alt="Avatar 2">
 class="avatar-choice"
 src="assets/avatars/avatar3.png"
 data-avatar="assets/avatars/avatar3.png"
-onclick="changeAvatar(this)"
 alt="Avatar 3">
 
 
@@ -146,7 +153,6 @@ alt="Avatar 3">
 class="avatar-choice"
 src="assets/avatars/avatar4.png"
 data-avatar="assets/avatars/avatar4.png"
-onclick="changeAvatar(this)"
 alt="Avatar 4">
 
 
@@ -154,7 +160,6 @@ alt="Avatar 4">
 class="avatar-choice"
 src="assets/avatars/avatar5.png"
 data-avatar="assets/avatars/avatar5.png"
-onclick="changeAvatar(this)"
 alt="Avatar 5">
 
 
@@ -162,7 +167,6 @@ alt="Avatar 5">
 class="avatar-choice"
 src="assets/avatars/avatar6.png"
 data-avatar="assets/avatars/avatar6.png"
-onclick="changeAvatar(this)"
 alt="Avatar 6">
 
 
@@ -170,99 +174,32 @@ alt="Avatar 6">
 
 
 
-<!-- ================= NAME ================= -->
-
-<div class="profile-form">
-
-<div class="profile-field">
-
-<label for="studentName">
-Your Name
-</label>
-
-<input
-type="text"
-id="studentName"
-placeholder="Enter your name"
-maxlength="40"
-autocomplete="name">
-
-</div>
-
-
-
-<!-- ================= CRITERION ================= -->
-
-<div class="profile-field">
-
-<label for="attendanceTarget">
-Attendance Criterion
-</label>
-
-<div class="criterion-row">
-
-<input
-type="number"
-id="attendanceTarget"
-min="1"
-max="100"
-value="75"
-placeholder="75">
-
-<span>%</span>
-
-</div>
-
-<small>
-For example: 75% is the minimum attendance you want to maintain.
-</small>
-
-</div>
-
-</div>
-
-
-
-<!-- ================= SAVE ================= -->
+<!-- ================= PROCEED ================= -->
 
 <div class="profile-actions">
 
 <button
 class="primary-btn"
-onclick="saveProfile()">
-
-Save Profile
-
-</button>
-
-
-<button
-class="secondary-btn"
 onclick="proceedToCalculator()">
 
-Proceed to Calculator →
+Proceed →
 
 </button>
 
 </div>
 
 
-<p
-id="profileMessage"
-class="profile-message">
-</p>
-
-
-</div>
 
 </div>
 
 </main>
 
+
+
 <script src="js/app.js"></script>
-  
+
 <script src="js/login.js"></script>
-  
+
 </body>
 
 </html>
