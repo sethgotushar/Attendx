@@ -410,9 +410,7 @@ h2 span {
 }
 
 
-/* =========================================================
-   HERO VISUAL — 3D ORBIT GLOBE
-   ========================================================= */
+/* HERO VISUAL */
 
 .hero-visual {
 
@@ -420,16 +418,10 @@ h2 span {
 
     height: 550px;
 
-    perspective: 1200px;
-
-    transform-style: preserve-3d;
+    perspective: 1000px;
 
 }
 
-
-/* =========================================================
-   MAIN GLOBE
-   ========================================================= */
 
 .orb {
 
@@ -438,226 +430,118 @@ h2 span {
     width: 250px;
     height: 250px;
 
+    border-radius: 50%;
+
     top: 50%;
     left: 50%;
 
     transform:
         translate(-50%, -50%)
-        translateZ(20px);
-
-    border-radius: 50%;
-
-    z-index: 10;
+        translateZ(50px);
 
     background:
         radial-gradient(
-            circle at 35% 28%,
-            #e1faff 0%,
-            var(--sky-light) 12%,
-            var(--sky) 32%,
-            #168dcc 56%,
-            #075b83 72%,
-            #03121b 100%
+            circle at 35% 30%,
+            var(--sky-light),
+            var(--sky) 30%,
+            #0877aa 60%,
+            #03121b 75%
         );
 
     box-shadow:
 
-        inset
-        -35px -30px 55px
-        rgba(0,0,0,.65),
+        0 0 40px rgba(105,217,255,.35),
+        0 0 120px rgba(105,217,255,.18);
 
-        inset
-        25px 20px 40px
-        rgba(255,255,255,.20),
-
-        0 0 40px
-        rgba(105,217,255,.35),
-
-        0 0 120px
-        rgba(105,217,255,.18);
-
-    animation:
-        orbFloat 5s ease-in-out infinite;
+    animation: orbFloat 5s ease-in-out infinite;
 
 }
 
-
-/* =========================================================
-   GLOBE FLOATING ANIMATION
-   ========================================================= */
 
 @keyframes orbFloat {
 
-    0%,
-    100% {
-
+    0%,100% {
         transform:
             translate(-50%, -50%)
-            translateY(0)
-            translateZ(20px)
             rotateX(0deg)
-            rotateY(0deg);
-
+            translateY(0);
     }
 
     50% {
-
         transform:
             translate(-50%, -50%)
-            translateY(-20px)
-            translateZ(20px)
-            rotateX(8deg)
-            rotateY(8deg);
-
+            rotateX(15deg)
+            translateY(-20px);
     }
 
 }
 
 
-/* =========================================================
-   ORBIT RINGS
-   ========================================================= */
-
-.orbit-ring {
+.energy-ring {
 
     position: absolute;
 
     top: 50%;
     left: 50%;
 
+    border: 1px solid rgba(105,217,255,.4);
+
     border-radius: 50%;
 
-    border:
-        1px solid
-        rgba(105,217,255,.55);
-
     transform-style: preserve-3d;
-
-    pointer-events: none;
 
 }
 
 
-/* =========================================================
-   RING ONE
-   ========================================================= */
-
-.orbit-one {
+.ring-one {
 
     width: 400px;
     height: 150px;
 
-    margin-left: -200px;
-    margin-top: -75px;
-
     transform:
+        translate(-50%, -50%)
         rotateX(70deg)
         rotateZ(20deg);
 
-    animation:
-        orbitOne 8s linear infinite;
+    animation: ringSpin 8s linear infinite;
 
 }
 
 
-/* =========================================================
-   RING TWO
-   ========================================================= */
-
-.orbit-two {
+.ring-two {
 
     width: 330px;
     height: 110px;
 
-    margin-left: -165px;
-    margin-top: -55px;
-
-    border-color:
-        rgba(105,217,255,.38);
-
     transform:
+        translate(-50%, -50%)
         rotateX(70deg)
         rotateZ(-35deg);
 
-    animation:
-        orbitTwo 6s linear infinite;
+    animation: ringSpinReverse 6s linear infinite;
 
 }
 
 
-/* =========================================================
-   BACK HALF
-   ========================================================= */
+@keyframes ringSpin {
 
-.orbit-back {
-
-    z-index: 5;
-
-    clip-path:
-        inset(0 0 50% 0);
-
-}
-
-
-/* =========================================================
-   FRONT HALF
-   ========================================================= */
-
-.orbit-front {
-
-    z-index: 15;
-
-    clip-path:
-        inset(50% 0 0 0);
-
-}
-
-
-/* =========================================================
-   RING ANIMATION ONE
-   ========================================================= */
-
-@keyframes orbitOne {
-
-    0% {
-
+    to {
         transform:
-            rotateX(70deg)
-            rotateZ(20deg);
-
-    }
-
-    100% {
-
-        transform:
+            translate(-50%, -50%)
             rotateX(70deg)
             rotateZ(380deg);
-
     }
 
 }
 
 
-/* =========================================================
-   RING ANIMATION TWO
-   ========================================================= */
+@keyframes ringSpinReverse {
 
-@keyframes orbitTwo {
-
-    0% {
-
+    to {
         transform:
-            rotateX(70deg)
-            rotateZ(-35deg);
-
-    }
-
-    100% {
-
-        transform:
+            translate(-50%, -50%)
             rotateX(70deg)
             rotateZ(-395deg);
-
     }
 
 }
