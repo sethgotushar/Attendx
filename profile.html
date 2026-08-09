@@ -24,11 +24,13 @@ href="css/style.css">
 <div id="particles"></div>
 
 
+<!-- ================= NAVBAR ================= -->
+
 <header class="navbar">
 
 <a href="index.html" class="brand">
 
-<img src="assets/logo.png">
+<img src="assets/logo.png" alt="AttendX Logo">
 
 <span>
 At<span>T</span>endX
@@ -52,17 +54,23 @@ At<span>T</span>endX
 </header>
 
 
+
+<!-- ================= PROFILE ================= -->
+
 <main class="page">
 
-<div class="panel">
+<div class="panel profile-setup-panel">
 
+
+<!-- PROFILE PREVIEW -->
 
 <div class="profile-header">
 
 <img
 id="profileImage"
 class="profile-photo"
-src="assets/avatars/avatar1.png">
+src="assets/avatars/avatar1.png"
+alt="Profile Avatar">
 
 
 <div>
@@ -76,13 +84,31 @@ Student
 </h1>
 
 <p id="profileClass">
-Class
+Target attendance: 75%
 </p>
 
 </div>
 
 </div>
 
+
+
+<!-- ================= SETUP ================= -->
+
+<div class="profile-setup">
+
+<h2>
+Create your <span>AttendX Profile</span>
+</h2>
+
+<p class="profile-description">
+Choose your avatar, enter your name and set the attendance
+criterion you want AttendX to calculate for you.
+</p>
+
+
+
+<!-- ================= AVATAR ================= -->
 
 <h3>
 Choose your avatar
@@ -93,56 +119,146 @@ Choose your avatar
 
 
 <img
-class="avatar-choice"
+class="avatar-choice selected-avatar"
 src="assets/avatars/avatar1.png"
-onclick="changeAvatar('assets/avatars/avatar1.png')">
+data-avatar="assets/avatars/avatar1.png"
+onclick="changeAvatar(this)"
+alt="Avatar 1">
 
 
 <img
 class="avatar-choice"
 src="assets/avatars/avatar2.png"
-onclick="changeAvatar('assets/avatars/avatar2.png')">
+data-avatar="assets/avatars/avatar2.png"
+onclick="changeAvatar(this)"
+alt="Avatar 2">
 
 
 <img
 class="avatar-choice"
 src="assets/avatars/avatar3.png"
-onclick="changeAvatar('assets/avatars/avatar3.png')">
+data-avatar="assets/avatars/avatar3.png"
+onclick="changeAvatar(this)"
+alt="Avatar 3">
+
 
 <img
 class="avatar-choice"
 src="assets/avatars/avatar4.png"
-onclick="changeAvatar('assets/avatars/avatar4.png')">
+data-avatar="assets/avatars/avatar4.png"
+onclick="changeAvatar(this)"
+alt="Avatar 4">
+
 
 <img
 class="avatar-choice"
 src="assets/avatars/avatar5.png"
-onclick="changeAvatar('assets/avatars/avatar5.png')">
+data-avatar="assets/avatars/avatar5.png"
+onclick="changeAvatar(this)"
+alt="Avatar 5">
+
 
 <img
 class="avatar-choice"
 src="assets/avatars/avatar6.png"
-onclick="changeAvatar('assets/avatars/avatar6.png')">
+data-avatar="assets/avatars/avatar6.png"
+onclick="changeAvatar(this)"
+alt="Avatar 6">
 
-  
+
 </div>
 
 
-<br><br>
 
+<!-- ================= NAME ================= -->
+
+<div class="profile-form">
+
+<div class="profile-field">
+
+<label for="studentName">
+Your Name
+</label>
+
+<input
+type="text"
+id="studentName"
+placeholder="Enter your name"
+maxlength="40"
+autocomplete="name">
+
+</div>
+
+
+
+<!-- ================= CRITERION ================= -->
+
+<div class="profile-field">
+
+<label for="attendanceTarget">
+Attendance Criterion
+</label>
+
+<div class="criterion-row">
+
+<input
+type="number"
+id="attendanceTarget"
+min="1"
+max="100"
+value="75"
+placeholder="75">
+
+<span>%</span>
+
+</div>
+
+<small>
+For example: 75% is the minimum attendance you want to maintain.
+</small>
+
+</div>
+
+</div>
+
+
+
+<!-- ================= SAVE ================= -->
+
+<div class="profile-actions">
 
 <button
 class="primary-btn"
-onclick="logout()">
+onclick="saveProfile()">
 
-Reset Profile
+Save Profile
 
 </button>
 
 
+<button
+class="secondary-btn"
+onclick="proceedToCalculator()">
+
+Proceed to Calculator →
+
+</button>
+
+</div>
+
+
+<p
+id="profileMessage"
+class="profile-message">
+</p>
+
+
+</div>
+
 </div>
 
 </main>
+
 
 
 <script src="js/app.js"></script>
