@@ -1,41 +1,420 @@
 /* =========================================================
-   ATTENDX PROFILE / LOGIN SYSTEM
+   ATTENDX ACCOUNT + PROFILE SYSTEM
    ========================================================= */
 
+const ATTENDX_ACCOUNT_KEY = "attendxAccount";
 const ATTENDX_PROFILE_KEY = "attendxProfile";
-
-let selectedAvatar = "assets/avatars/avatar1.png";
 
 
 /* =========================================================
-   PAGE START
+   PAGE LOAD
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    loadSavedProfile();
+    loadAccountData();
 
-    setupAvatarButtons();
+    setupAvatarPage();
 
 });
 
 
 /* =========================================================
-   AVATAR SELECTION
+   CREATE ACCOUNT
+   ACCOUNT PAGE
    ========================================================= */
 
-function setupAvatarButtons() {
+function createAccount() {
+
+    const username =
+        document.getElementById("username");
+
+    const className =
+        document.getElementById("className");
+
+    const targetAttendance =
+        document.getElementById("targetAttendance");
+
+    const message =
+        document.getElementById("accountMessage");
+
+
+    /* Check elements */
+
+    if (!username || !className || !targetAttendance) {
+
+        console.error(
+            "AttendX: Account form elements not found."
+        );
+
+        return;
+
+    }
+
+
+    const name =
+        username.value.trim();
+
+    const studentClass =
+        className.value.trim();
+
+    const target =
+        Number(targetAttendance.value);
+
+
+    /* =====================================================
+       VALIDATION
+       ===================================================== */
+
+    if (name === "") {
+
+        showAccountMessage(
+            "Please enter your name.",
+            "error"
+        );
+
+        username.focus();
+
+        return;
+
+    }
+
+
+    if (studentClass === "") {
+
+        showAccountMessage(
+            "Please enter your class.",
+            "error"
+        );
+
+        className.focus();
+
+        return;
+
+    }
+
+
+    if (
+        !Number.isFinite(target) ||
+        target < 1 ||
+        target > 100
+    ) {
+
+        showAccountMessage(
+            "Attendance must be between 1% and 100%.",
+            "error"
+        );
+
+        targetAttendance.focus();
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       CREATE ACCOUNT OBJECT
+       ===================================================== */
+
+    const account = {
+
+        name: name,
+
+        className: studentClass,
+
+        targetAttendance: target
+
+    };
+
+
+    /* =====================================================
+       SAVE ACCOUNT
+       ===================================================== */
+
+    localStorage.setItem(
+
+        ATTENDX_ACCOUNT_KEY,
+
+        JSON.stringify(account)
+
+    );
+
+
+    /* =====================================================
+       SUCCESS
+       ===================================================== */
+
+    showAccountMessage(
+        "✓ Details saved! Choose your avatar next.",
+        "success"
+    );
+
+
+    /* =====================================================
+       GO TO AVATAR PAGE
+       ===================================================== */
+
+    setTimeout(function () {
+
+        window.location.href =
+            "profile.html";
+
+    }, 700);
+
+}
+
+
+/* =========================================================
+   LOAD ACCOUNT
+   ========================================================= */
+
+function loadAccountData() {
+
+    const savedAccount =
+        localStorage.getItem(
+            ATTENDX_ACCOUNT_KEY
+        );
+
+
+    if (!savedAccount) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const account =
+            JSON.parse(savedAccount);
+
+
+        const username =
+            document.getElementById(
+                "username"
+            );
+
+
+        const className =
+            document.getElementById(
+                "className"
+            );
+
+
+        const targetAttendance =
+            document.getElementById(
+                "targetAttendance"
+            );
+
+
+        if (
+            username &&
+            account.name
+        ) {
+
+            username.value =
+                account.name;
+
+        }
+
+
+        if (
+            className &&
+            account.className
+        ) {
+
+            className.value =
+                account.className;
+
+        }
+
+
+        if (
+            targetAttendance &&
+            account.targetAttendance
+        ) {
+
+            targetAttendance.value =
+                account.targetAttendance;
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "AttendX account loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ACCOUNT MESSAGE
+   ========================================================= */
+
+function showAccountMessage(
+    text,
+    type
+) {
+
+    const message =
+        document.getElementById(
+            "accountMessage"
+        );
+
+
+    if (!message) {
+
+        return;
+
+    }
+
+
+    message.textContent =
+        text;
+
+
+    message.className =
+        "message " + type;
+
+}
+
+
+/* =========================================================
+   AVATAR PAGE
+   ========================================================= */
+
+function setupAvatarPage() {
 
     const avatars =
-        document.querySelectorAll(".avatar-choice");
+        document.querySelectorAll(
+            ".avatar-choice"
+        );
+
+
+    if (avatars.length === 0) {
+
+        return;
+
+    }
+
+
+    /* Load saved account */
+
+    const savedAccount =
+        localStorage.getItem(
+            ATTENDX_ACCOUNT_KEY
+        );
+
+
+    if (!savedAccount) {
+
+        /*
+         * User somehow opened profile
+         * without creating an account.
+         */
+
+        return;
+
+    }
+
+
+    try {
+
+        const account =
+            JSON.parse(savedAccount);
+
+
+        /* ================================================
+           SHOW ACCOUNT INFORMATION
+           ================================================ */
+
+        const profileName =
+            document.getElementById(
+                "profileName"
+            );
+
+
+        const profileClass =
+            document.getElementById(
+                "profileClass"
+            );
+
+
+        if (profileName) {
+
+            profileName.textContent =
+                account.name;
+
+        }
+
+
+        if (profileClass) {
+
+            profileClass.textContent =
+                account.className +
+                " • Target: " +
+                account.targetAttendance +
+                "%";
+
+        }
+
+
+        /* ================================================
+           RESTORE PREVIOUS AVATAR
+           ================================================ */
+
+        const savedProfile =
+            localStorage.getItem(
+                ATTENDX_PROFILE_KEY
+            );
+
+
+        if (savedProfile) {
+
+            const profile =
+                JSON.parse(savedProfile);
+
+
+            if (profile.avatar) {
+
+                selectAvatarByPath(
+                    profile.avatar
+                );
+
+            }
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "AttendX avatar page error:",
+            error
+        );
+
+    }
+
+
+    /* ================================================
+       AVATAR CLICK
+       ================================================ */
 
     avatars.forEach(function (avatar) {
 
-        avatar.addEventListener("click", function () {
+        avatar.addEventListener(
+            "click",
+            function () {
 
-            selectAvatar(this);
+                selectAvatar(this);
 
-        });
+            }
+        );
 
     });
 
@@ -48,20 +427,32 @@ function setupAvatarButtons() {
 
 function selectAvatar(element) {
 
-    const avatar =
-        element.getAttribute("data-avatar");
+    if (!element) {
 
-    if (!avatar) {
         return;
+
     }
 
-    selectedAvatar = avatar;
+
+    const avatar =
+        element.getAttribute(
+            "data-avatar"
+        );
 
 
-    /* Remove selection */
+    if (!avatar) {
+
+        return;
+
+    }
+
+
+    /* Remove old selection */
 
     document
-        .querySelectorAll(".avatar-choice")
+        .querySelectorAll(
+            ".avatar-choice"
+        )
         .forEach(function (item) {
 
             item.classList.remove(
@@ -71,250 +462,38 @@ function selectAvatar(element) {
         });
 
 
-    /* Add selection */
+    /* Add new selection */
 
     element.classList.add(
         "selected-avatar"
     );
 
 
-    /* Change profile preview */
+    /* Update preview */
 
     const profileImage =
         document.getElementById(
             "profileImage"
         );
 
-    if (profileImage) {
-
-        profileImage.src =
-            selectedAvatar;
-
-    }
-
-}
-
-
-/* =========================================================
-   SAVE PROFILE
-   ========================================================= */
-
-function saveProfile() {
-
-    const nameInput =
-        document.getElementById(
-            "studentName"
-        );
-
-    const targetInput =
-        document.getElementById(
-            "attendanceTarget"
-        );
-
-
-    if (!nameInput) {
-
-        alert("Name field was not found.");
-
-        return;
-
-    }
-
-
-    if (!targetInput) {
-
-        alert("Attendance criterion field was not found.");
-
-        return;
-
-    }
-
-
-    const name =
-        nameInput.value.trim();
-
-
-    const target =
-        Number(targetInput.value);
-
-
-    /* -------------------------
-       CHECK NAME
-       ------------------------- */
-
-    if (name.length === 0) {
-
-        alert(
-            "Please enter your name first."
-        );
-
-        nameInput.focus();
-
-        return;
-
-    }
-
-
-    /* -------------------------
-       CHECK TARGET
-       ------------------------- */
-
-    if (
-        !Number.isFinite(target) ||
-        target < 1 ||
-        target > 100
-    ) {
-
-        alert(
-            "Please enter an attendance criterion between 1 and 100."
-        );
-
-        targetInput.focus();
-
-        return;
-
-    }
-
-
-    /* =====================================================
-       CREATE PROFILE
-       ===================================================== */
-
-    const profile = {
-
-        name: name,
-
-        avatar: selectedAvatar,
-
-        attendanceTarget: target
-
-    };
-
-
-    /* =====================================================
-       SAVE
-       ===================================================== */
-
-    localStorage.setItem(
-
-        ATTENDX_PROFILE_KEY,
-
-        JSON.stringify(profile)
-
-    );
-
-
-    /* =====================================================
-       UPDATE SCREEN
-       ===================================================== */
-
-    updateProfileScreen(profile);
-
-
-    /* =====================================================
-       SUCCESS MESSAGE
-       ===================================================== */
-
-    const message =
-        document.getElementById(
-            "profileMessage"
-        );
-
-    if (message) {
-
-        message.textContent =
-            "✓ Profile saved successfully!";
-
-        message.className =
-            "profile-message success";
-
-    }
-
-
-    /* =====================================================
-       SHOW PROCEED BUTTON
-       ===================================================== */
-
-    const proceedButton =
-        document.getElementById(
-            "proceedButton"
-        );
-
-    if (proceedButton) {
-
-        proceedButton.style.display =
-            "inline-flex";
-
-    }
-
-}
-
-
-/* =========================================================
-   UPDATE PROFILE SCREEN
-   ========================================================= */
-
-function updateProfileScreen(profile) {
-
-    const profileImage =
-        document.getElementById(
-            "profileImage"
-        );
-
-
-    const profileName =
-        document.getElementById(
-            "profileName"
-        );
-
-
-    const profileClass =
-        document.getElementById(
-            "profileClass"
-        );
-
 
     if (profileImage) {
 
         profileImage.src =
-            profile.avatar;
+            avatar;
 
     }
 
 
-    if (profileName) {
+    /* Save selected avatar immediately */
 
-        profileName.textContent =
-            profile.name;
-
-    }
-
-
-    if (profileClass) {
-
-        profileClass.textContent =
-            "Target attendance: " +
-            profile.attendanceTarget +
-            "%";
-
-    }
-
-}
-
-
-/* =========================================================
-   LOAD SAVED PROFILE
-   ========================================================= */
-
-function loadSavedProfile() {
-
-    const saved =
+    const savedAccount =
         localStorage.getItem(
-            ATTENDX_PROFILE_KEY
+            ATTENDX_ACCOUNT_KEY
         );
 
 
-    if (!saved) {
+    if (!savedAccount) {
 
         return;
 
@@ -323,93 +502,38 @@ function loadSavedProfile() {
 
     try {
 
-        const profile =
-            JSON.parse(saved);
+        const account =
+            JSON.parse(savedAccount);
 
 
-        /* Restore avatar */
+        const profile = {
 
-        if (profile.avatar) {
+            name: account.name,
 
-            selectedAvatar =
-                profile.avatar;
+            className:
+                account.className,
 
-        }
+            targetAttendance:
+                account.targetAttendance,
 
+            avatar: avatar
 
-        /* Restore name */
-
-        const nameInput =
-            document.getElementById(
-                "studentName"
-            );
-
-        if (
-            nameInput &&
-            profile.name
-        ) {
-
-            nameInput.value =
-                profile.name;
-
-        }
+        };
 
 
-        /* Restore criterion */
+        localStorage.setItem(
 
-        const targetInput =
-            document.getElementById(
-                "attendanceTarget"
-            );
+            ATTENDX_PROFILE_KEY,
 
-        if (
-            targetInput &&
-            profile.attendanceTarget
-        ) {
+            JSON.stringify(profile)
 
-            targetInput.value =
-                profile.attendanceTarget;
-
-        }
-
-
-        /* Restore preview */
-
-        updateProfileScreen(profile);
-
-
-        /* Highlight correct avatar */
-
-        document
-            .querySelectorAll(
-                ".avatar-choice"
-            )
-            .forEach(function (avatar) {
-
-                avatar.classList.remove(
-                    "selected-avatar"
-                );
-
-
-                if (
-                    avatar.getAttribute(
-                        "data-avatar"
-                    ) === profile.avatar
-                ) {
-
-                    avatar.classList.add(
-                        "selected-avatar"
-                    );
-
-                }
-
-            });
+        );
 
 
     } catch (error) {
 
         console.error(
-            "AttendX profile error:",
+            "AttendX avatar save error:",
             error
         );
 
@@ -419,21 +543,93 @@ function loadSavedProfile() {
 
 
 /* =========================================================
-   PROCEED TO CALCULATOR
+   SELECT AVATAR BY PATH
+   ========================================================= */
+
+function selectAvatarByPath(
+    avatarPath
+) {
+
+    const avatars =
+        document.querySelectorAll(
+            ".avatar-choice"
+        );
+
+
+    avatars.forEach(function (avatar) {
+
+        avatar.classList.remove(
+            "selected-avatar"
+        );
+
+
+        if (
+            avatar.getAttribute(
+                "data-avatar"
+            ) === avatarPath
+        ) {
+
+            avatar.classList.add(
+                "selected-avatar"
+            );
+
+
+            const profileImage =
+                document.getElementById(
+                    "profileImage"
+                );
+
+
+            if (profileImage) {
+
+                profileImage.src =
+                    avatarPath;
+
+            }
+
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   PROCEED FROM AVATAR PAGE
    ========================================================= */
 
 function proceedToCalculator() {
 
-    const saved =
+    const savedAccount =
+        localStorage.getItem(
+            ATTENDX_ACCOUNT_KEY
+        );
+
+
+    if (!savedAccount) {
+
+        alert(
+            "Please create your AttendX account first."
+        );
+
+        window.location.href =
+            "login.html";
+
+        return;
+
+    }
+
+
+    const savedProfile =
         localStorage.getItem(
             ATTENDX_PROFILE_KEY
         );
 
 
-    if (!saved) {
+    if (!savedProfile) {
 
         alert(
-            "Please save your profile first."
+            "Please choose an avatar first."
         );
 
         return;
@@ -441,25 +637,55 @@ function proceedToCalculator() {
     }
 
 
-    window.location.href =
-        "calculator.html";
+    try {
+
+        const profile =
+            JSON.parse(savedProfile);
+
+
+        if (!profile.avatar) {
+
+            alert(
+                "Please choose an avatar first."
+            );
+
+            return;
+
+        }
+
+
+        /* Everything is ready */
+
+        window.location.href =
+            "calculator.html";
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Something went wrong. Please choose your avatar again."
+        );
+
+    }
 
 }
 
 
 /* =========================================================
-   RESET PROFILE
+   RESET ACCOUNT
    ========================================================= */
 
 function logout() {
 
-    const confirmReset =
+    const confirmation =
         confirm(
-            "Reset your AttendX profile?"
+            "Are you sure you want to reset your AttendX profile?"
         );
 
 
-    if (!confirmReset) {
+    if (!confirmation) {
 
         return;
 
@@ -467,106 +693,16 @@ function logout() {
 
 
     localStorage.removeItem(
+        ATTENDX_ACCOUNT_KEY
+    );
+
+
+    localStorage.removeItem(
         ATTENDX_PROFILE_KEY
     );
 
 
-    selectedAvatar =
-        "assets/avatars/avatar1.png";
-
-
-    const nameInput =
-        document.getElementById(
-            "studentName"
-        );
-
-    if (nameInput) {
-
-        nameInput.value = "";
-
-    }
-
-
-    const targetInput =
-        document.getElementById(
-            "attendanceTarget"
-        );
-
-    if (targetInput) {
-
-        targetInput.value = 75;
-
-    }
-
-
-    const profileImage =
-        document.getElementById(
-            "profileImage"
-        );
-
-    if (profileImage) {
-
-        profileImage.src =
-            "assets/avatars/avatar1.png";
-
-    }
-
-
-    const profileName =
-        document.getElementById(
-            "profileName"
-        );
-
-    if (profileName) {
-
-        profileName.textContent =
-            "Student";
-
-    }
-
-
-    const profileClass =
-        document.getElementById(
-            "profileClass"
-        );
-
-    if (profileClass) {
-
-        profileClass.textContent =
-            "Target attendance: 75%";
-
-    }
-
-
-    document
-        .querySelectorAll(
-            ".avatar-choice"
-        )
-        .forEach(function (avatar) {
-
-            avatar.classList.remove(
-                "selected-avatar"
-            );
-
-        });
-
-
-    const firstAvatar =
-        document.querySelector(
-            ".avatar-choice"
-        );
-
-    if (firstAvatar) {
-
-        firstAvatar.classList.add(
-            "selected-avatar"
-        );
-
-    }
-
-
-    alert(
-        "AttendX profile has been reset."
-    );
+    window.location.href =
+        "login.html";
 
 }
