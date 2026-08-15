@@ -1263,3 +1263,213 @@ footer {
     }
 
 }
+
+
+/* =========================================================
+   ATTENDX HOME PAGE — ANIME BACKGROUND
+   SAFE ADDITION — DOES NOT REPLACE EXISTING STYLES
+   ========================================================= */
+
+body.home-page {
+    position: relative;
+    overflow-x: hidden;
+}
+
+
+/* ---------------------------------------------------------
+   ANIME BACKGROUND
+   --------------------------------------------------------- */
+
+body.home-page::before {
+
+    content: "";
+
+    position: fixed;
+
+    top: -8%;
+    left: -8%;
+
+    width: 116%;
+    height: 116%;
+
+    background-image:
+        linear-gradient(
+            rgba(3, 10, 18, 0.76),
+            rgba(3, 10, 18, 0.84)
+        ),
+        url("../assets/home-anime-bg.png");
+
+    background-size: cover;
+
+    background-position: center;
+
+    background-repeat: no-repeat;
+
+    pointer-events: none;
+
+    z-index: 0;
+
+    animation:
+        attendxAnimeBackground
+        18s
+        ease-in-out
+        infinite
+        alternate;
+
+}
+
+
+/* ---------------------------------------------------------
+   SOFT BLUE ATMOSPHERE
+   --------------------------------------------------------- */
+
+body.home-page::after {
+
+    content: "";
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 1;
+
+    background:
+        radial-gradient(
+            circle at 70% 45%,
+            rgba(80, 210, 255, 0.12),
+            transparent 35%
+        ),
+
+        radial-gradient(
+            circle at 20% 65%,
+            rgba(0, 130, 255, 0.08),
+            transparent 35%
+        );
+
+    animation:
+        attendxAtmosphere
+        10s
+        ease-in-out
+        infinite
+        alternate;
+
+}
+
+
+/* ---------------------------------------------------------
+   KEEP YOUR EXISTING WEBSITE ABOVE THE BACKGROUND
+   --------------------------------------------------------- */
+
+body.home-page .navbar,
+body.home-page main,
+body.home-page footer {
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+/* ---------------------------------------------------------
+   CINEMATIC MOVEMENT
+   --------------------------------------------------------- */
+
+@keyframes attendxAnimeBackground {
+
+    0% {
+
+        transform:
+            scale(1.03)
+            translate3d(0, 0, 0);
+
+    }
+
+    50% {
+
+        transform:
+            scale(1.07)
+            translate3d(-1%, -0.5%, 0);
+
+    }
+
+    100% {
+
+        transform:
+            scale(1.10)
+            translate3d(1%, 0.8%, 0);
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   BLUE LIGHT MOVEMENT
+   --------------------------------------------------------- */
+
+@keyframes attendxAtmosphere {
+
+    0% {
+
+        opacity: 0.55;
+
+        transform: scale(1);
+
+    }
+
+    50% {
+
+        opacity: 0.85;
+
+        transform: scale(1.06);
+
+    }
+
+    100% {
+
+        opacity: 0.65;
+
+        transform: scale(1.02);
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 768px) {
+
+    body.home-page::before {
+
+        background-position: 58% center;
+
+        background-image:
+            linear-gradient(
+                rgba(3, 10, 18, 0.80),
+                rgba(3, 10, 18, 0.88)
+            ),
+            url("../assets/home-anime-bg.png");
+
+        animation-duration: 22s;
+
+    }
+
+
+    body.home-page::after {
+
+        background:
+            radial-gradient(
+                circle at 60% 40%,
+                rgba(73, 205, 255, 0.10),
+                transparent 40%
+            );
+
+    }
+
+}
