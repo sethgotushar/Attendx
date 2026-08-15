@@ -1473,3 +1473,446 @@ body.home-page footer {
 
 }
 
+
+/* =========================================================
+   ATTENDX — CALCULATOR / PROFILE / ABOUT ANIMATED BACKGROUNDS
+   ========================================================= */
+
+
+/* =========================================================
+   CALCULATOR
+   ========================================================= */
+
+body.calculator-page {
+    position: relative;
+    overflow-x: hidden;
+}
+
+
+/* Calculator background */
+
+body.calculator-page::before {
+
+    content: "";
+
+    position: fixed;
+
+    top: -8%;
+    left: -8%;
+
+    width: 116%;
+    height: 116%;
+
+    background-image:
+        linear-gradient(
+            rgba(3, 10, 18, 0.30),
+            rgba(3, 10, 18, 0.40)
+        ),
+        url("../assets/calculator-bg.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    pointer-events: none;
+
+    z-index: 0;
+
+    animation:
+        calculatorBackgroundMove
+        20s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+
+/* Calculator blue atmosphere */
+
+body.calculator-page::after {
+
+    content: "";
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 1;
+
+    background:
+        radial-gradient(
+            circle at 70% 40%,
+            rgba(60, 205, 255, 0.13),
+            transparent 38%
+        );
+
+    animation:
+        calculatorGlow
+        9s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+
+/* Keep calculator content above background */
+
+body.calculator-page .navbar,
+body.calculator-page main,
+body.calculator-page footer {
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+@keyframes calculatorBackgroundMove {
+
+    0% {
+        transform:
+            scale(1.03)
+            translate3d(0, 0, 0);
+    }
+
+    50% {
+        transform:
+            scale(1.07)
+            translate3d(-0.8%, -0.5%, 0);
+    }
+
+    100% {
+        transform:
+            scale(1.10)
+            translate3d(0.8%, 0.6%, 0);
+    }
+}
+
+
+@keyframes calculatorGlow {
+
+    0% {
+        opacity: 0.55;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0.90;
+        transform: scale(1.06);
+    }
+}
+
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+body.profile-page {
+
+    position: relative;
+    overflow-x: hidden;
+}
+
+
+/* Profile background */
+
+body.profile-page::before {
+
+    content: "";
+
+    position: fixed;
+
+    top: -8%;
+    left: -8%;
+
+    width: 116%;
+    height: 116%;
+
+    background-image:
+        linear-gradient(
+            rgba(3, 10, 18, 0.30),
+            rgba(3, 10, 18, 0.40)
+        ),
+        url("../assets/profile-bg.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    pointer-events: none;
+
+    z-index: 0;
+
+    animation:
+        profileBackgroundMove
+        22s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+
+/* Profile blue glow */
+
+body.profile-page::after {
+
+    content: "";
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 1;
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(75, 205, 255, 0.14),
+            transparent 40%
+        );
+
+    animation:
+        profileGlow
+        11s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+
+/* Keep profile content above background */
+
+body.profile-page .navbar,
+body.profile-page main,
+body.profile-page footer {
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+@keyframes profileBackgroundMove {
+
+    0% {
+        transform:
+            scale(1.03)
+            translate3d(0, 0, 0);
+    }
+
+    50% {
+        transform:
+            scale(1.06)
+            translate3d(0.7%, -0.4%, 0);
+    }
+
+    100% {
+        transform:
+            scale(1.09)
+            translate3d(-0.7%, 0.6%, 0);
+    }
+}
+
+
+@keyframes profileGlow {
+
+    0% {
+        opacity: 0.50;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0.90;
+        transform: scale(1.07);
+    }
+}
+
+
+/* =========================================================
+   ABOUT
+   ========================================================= */
+
+body.about-page {
+
+    position: relative;
+    overflow-x: hidden;
+}
+
+
+/* About background */
+
+body.about-page::before {
+
+    content: "";
+
+    position: fixed;
+
+    top: -8%;
+    left: -8%;
+
+    width: 116%;
+    height: 116%;
+
+    background-image:
+        linear-gradient(
+            rgba(3, 10, 18, 0.30),
+            rgba(3, 10, 18, 0.40)
+        ),
+        url("../assets/about-bg.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    pointer-events: none;
+
+    z-index: 0;
+
+    animation:
+        aboutBackgroundMove
+        24s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+
+/* About atmosphere */
+
+body.about-page::after {
+
+    content: "";
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 1;
+
+    background:
+        radial-gradient(
+            circle at 65% 40%,
+            rgba(100, 215, 255, 0.13),
+            transparent 40%
+        ),
+
+        radial-gradient(
+            circle at 25% 65%,
+            rgba(80, 100, 255, 0.08),
+            transparent 38%
+        );
+
+    animation:
+        aboutGlow
+        12s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+
+/* Keep About content above background */
+
+body.about-page .navbar,
+body.about-page main,
+body.about-page footer {
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+@keyframes aboutBackgroundMove {
+
+    0% {
+        transform:
+            scale(1.03)
+            translate3d(0, 0, 0);
+    }
+
+    50% {
+        transform:
+            scale(1.06)
+            translate3d(-0.6%, -0.4%, 0);
+    }
+
+    100% {
+        transform:
+            scale(1.09)
+            translate3d(0.7%, 0.5%, 0);
+    }
+}
+
+
+@keyframes aboutGlow {
+
+    0% {
+        opacity: 0.50;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0.90;
+        transform: scale(1.06);
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    body.calculator-page::before {
+
+        background-position: 60% center;
+
+        background-image:
+            linear-gradient(
+                rgba(3, 10, 18, 0.38),
+                rgba(3, 10, 18, 0.48)
+            ),
+            url("../assets/calculator-bg.png");
+
+        animation-duration: 24s;
+    }
+
+
+    body.profile-page::before {
+
+        background-position: 58% center;
+
+        background-image:
+            linear-gradient(
+                rgba(3, 10, 18, 0.38),
+                rgba(3, 10, 18, 0.48)
+            ),
+            url("../assets/profile-bg.png");
+
+        animation-duration: 26s;
+    }
+
+
+    body.about-page::before {
+
+        background-position: 58% center;
+
+        background-image:
+            linear-gradient(
+                rgba(3, 10, 18, 0.38),
+                rgba(3, 10, 18, 0.48)
+            ),
+            url("../assets/about-bg.png");
+
+        animation-duration: 28s;
+    }
+
+}
