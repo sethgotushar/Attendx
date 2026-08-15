@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Member Access | AttendX</title>
+
+<link rel="icon"
+href="assets/logo.png">
+
+<link rel="stylesheet"
+href="css/style.css">
+
+</head>
+
+
+<body>
+
+<div id="particles"></div>
+
+
+<header class="navbar">
+
+<a href="index.html" class="brand">
+
+<img src="assets/logo.png">
+
+<span>
+At<span>T</span>endX
+</span>
+
+</a>
+
+
+<nav>
+
+<a href="index.html">Home</a>
+
+<a href="calculator.html">Calculator</a>
+
+<a href="profile.html">Profile</a>
+
+<a href="about.html">About</a>
+
+</nav>
+
+</header>
+
+
+<main class="page">
+
+<div class="panel member-panel">
+
+<p class="eyebrow">
+ATTENDX MEMBERS
+</p>
+
+
+<h1>
+Member <span>Access</span>
+</h1>
+
+
+<p>
+This area is reserved for AttendX members.
+Enter the member password to continue.
+</p>
+
+
+<div class="member-lock">
+
+<div class="lock-icon">
+🔐
+</div>
+
+
+<label for="memberPassword">
+Member Password
+</label>
+
+
+<input
+id="memberPassword"
+type="password"
+placeholder="Enter password"
+autocomplete="off"
+>
+
+
+<button
+class="primary-btn"
+onclick="checkMemberPassword()">
+
+Unlock Member Area →
+
+</button>
+
+
+<p
+id="memberMessage"
+class="message">
+</p>
+
+</div>
+
+</div>
+
+</main>
+
+
+<script src="js/app.js"></script>
+
+<script src="js/member.js"></script>
+
+</body>
+
+</html>
