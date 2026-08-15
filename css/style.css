@@ -1293,8 +1293,8 @@ body.home-page::before {
 
     background-image:
         linear-gradient(
-            rgba(3, 10, 18, 0.48),
-            rgba(3, 10, 18, 0.58)
+            rgba(3, 10, 18, 0.28),
+            rgba(3, 10, 18, 0.38)
         ),
         url("../assets/home-anime-bg.png");
 
@@ -1450,8 +1450,8 @@ body.home-page footer {
 
         background-image:
             linear-gradient(
-                rgba(3, 10, 18, 0.55),
-                rgba(3, 10, 18, 0.65)
+                rgba(3, 10, 18, 0.35),
+                rgba(3, 10, 18, 0.45)
             ),
             url("../assets/home-anime-bg.png");
 
