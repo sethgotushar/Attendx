@@ -2,6 +2,11 @@
    ATTENDX ACCOUNT + PROFILE SYSTEM
    ========================================================= */
 
+
+/* =========================================================
+   STORAGE KEYS
+   ========================================================= */
+
 const ATTENDX_ACCOUNT_KEY = "attendxAccount";
 const ATTENDX_PROFILE_KEY = "attendxProfile";
 
@@ -26,62 +31,92 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function createAccount() {
 
+    /* -----------------------------------------------------
+       GET FORM ELEMENTS
+       ----------------------------------------------------- */
+
     const username =
         document.getElementById("username");
 
     const className =
         document.getElementById("className");
 
+    const currentAttendance =
+        document.getElementById("currentAttendance");
+
     const targetAttendance =
         document.getElementById("targetAttendance");
 
-     const currentAttendance =
-        document.getElementById("currentAttendance");
-
-     const startDate =
+    const startDate =
         document.getElementById("startDate");
 
-     const endDate =
+    const endDate =
         document.getElementById("endDate");
-   
-     const message =
+
+    const message =
         document.getElementById("accountMessage");
 
 
-    /* Check elements */
+    /* -----------------------------------------------------
+       CHECK ELEMENTS
+       ----------------------------------------------------- */
 
-    if (!username || !className || !targetAttendance) {
+    if (
+        !username ||
+        !className ||
+        !currentAttendance ||
+        !targetAttendance ||
+        !startDate ||
+        !endDate
+    ) {
 
         console.error(
             "AttendX: Account form elements not found."
         );
+
+        if (message) {
+
+            showAccountMessage(
+                "Some form fields are missing.",
+                "error"
+            );
+
+        }
 
         return;
 
     }
 
 
-   const name =
-    username.value.trim();
+    /* -----------------------------------------------------
+       GET VALUES
+       ----------------------------------------------------- */
 
-const studentClass =
-    className.value.trim();
+    const name =
+        username.value.trim();
 
-const current =
-    Number(currentAttendance.value);
+    const studentClass =
+        className.value.trim();
 
-const target =
-    Number(targetAttendance.value);
+    const current =
+        Number(currentAttendance.value);
 
-const periodStart =
-    startDate.value;
+    const target =
+        Number(targetAttendance.value);
 
-const periodEnd =
-    endDate.value;
+    const periodStart =
+        startDate.value;
+
+    const periodEnd =
+        endDate.value;
+
 
     /* =====================================================
        VALIDATION
        ===================================================== */
+
+
+    /* NAME */
 
     if (name === "") {
 
@@ -97,6 +132,8 @@ const periodEnd =
     }
 
 
+    /* CLASS */
+
     if (studentClass === "") {
 
         showAccountMessage(
@@ -111,6 +148,28 @@ const periodEnd =
     }
 
 
+    /* CURRENT ATTENDANCE */
+
+    if (
+        !Number.isFinite(current) ||
+        current < 0 ||
+        current > 100
+    ) {
+
+        showAccountMessage(
+            "Current attendance must be between 0% and 100%.",
+            "error"
+        );
+
+        currentAttendance.focus();
+
+        return;
+
+    }
+
+
+    /* TARGET ATTENDANCE */
+
     if (
         !Number.isFinite(target) ||
         target < 1 ||
@@ -118,11 +177,59 @@ const periodEnd =
     ) {
 
         showAccountMessage(
-            "Attendance must be between 1% and 100%.",
+            "Target attendance must be between 1% and 100%.",
             "error"
         );
 
         targetAttendance.focus();
+
+        return;
+
+    }
+
+
+    /* START DATE */
+
+    if (!periodStart) {
+
+        showAccountMessage(
+            "Please select your academic start date.",
+            "error"
+        );
+
+        startDate.focus();
+
+        return;
+
+    }
+
+
+    /* END DATE */
+
+    if (!periodEnd) {
+
+        showAccountMessage(
+            "Please select your academic end date.",
+            "error"
+        );
+
+        endDate.focus();
+
+        return;
+
+    }
+
+
+    /* DATE ORDER */
+
+    if (periodStart > periodEnd) {
+
+        showAccountMessage(
+            "End date must be after the start date.",
+            "error"
+        );
+
+        endDate.focus();
 
         return;
 
@@ -139,7 +246,13 @@ const periodEnd =
 
         className: studentClass,
 
-        targetAttendance: target
+        currentAttendance: current,
+
+        targetAttendance: target,
+
+        startDate: periodStart,
+
+        endDate: periodEnd
 
     };
 
@@ -158,7 +271,81 @@ const periodEnd =
 
 
     /* =====================================================
-       SUCCESS
+       UPDATE EXISTING PROFILE
+       -----------------------------------------------------
+       If the student is editing their profile, preserve:
+       - avatar
+       - attendance records
+       ===================================================== */
+
+    const savedProfile =
+        localStorage.getItem(
+            ATTENDX_PROFILE_KEY
+        );
+
+
+    let previousProfile = null;
+
+
+    if (savedProfile) {
+
+        try {
+
+            previousProfile =
+                JSON.parse(savedProfile);
+
+        } catch (error) {
+
+            previousProfile = null;
+
+        }
+
+    }
+
+
+    if (previousProfile) {
+
+        const updatedProfile = {
+
+            name: account.name,
+
+            className: account.className,
+
+            currentAttendance:
+                account.currentAttendance,
+
+            targetAttendance:
+                account.targetAttendance,
+
+            startDate:
+                account.startDate,
+
+            endDate:
+                account.endDate,
+
+            avatar:
+                previousProfile.avatar ||
+                "assets/avatars/avatar1.png",
+
+            attendance:
+                previousProfile.attendance || {}
+
+        };
+
+
+        localStorage.setItem(
+
+            ATTENDX_PROFILE_KEY,
+
+            JSON.stringify(updatedProfile)
+
+        );
+
+    }
+
+
+    /* =====================================================
+       SUCCESS MESSAGE
        ===================================================== */
 
     showAccountMessage(
@@ -206,23 +393,44 @@ function loadAccountData() {
             JSON.parse(savedAccount);
 
 
+        /* -------------------------------------------------
+           GET FORM ELEMENTS
+           ------------------------------------------------- */
+
         const username =
             document.getElementById(
                 "username"
             );
-
 
         const className =
             document.getElementById(
                 "className"
             );
 
+        const currentAttendance =
+            document.getElementById(
+                "currentAttendance"
+            );
 
         const targetAttendance =
             document.getElementById(
                 "targetAttendance"
             );
 
+        const startDate =
+            document.getElementById(
+                "startDate"
+            );
+
+        const endDate =
+            document.getElementById(
+                "endDate"
+            );
+
+
+        /* -------------------------------------------------
+           RESTORE NAME
+           ------------------------------------------------- */
 
         if (
             username &&
@@ -235,6 +443,10 @@ function loadAccountData() {
         }
 
 
+        /* -------------------------------------------------
+           RESTORE CLASS
+           ------------------------------------------------- */
+
         if (
             className &&
             account.className
@@ -246,13 +458,62 @@ function loadAccountData() {
         }
 
 
+        /* -------------------------------------------------
+           RESTORE CURRENT ATTENDANCE
+           ------------------------------------------------- */
+
+        if (
+            currentAttendance &&
+            account.currentAttendance !== undefined
+        ) {
+
+            currentAttendance.value =
+                account.currentAttendance;
+
+        }
+
+
+        /* -------------------------------------------------
+           RESTORE TARGET ATTENDANCE
+           ------------------------------------------------- */
+
         if (
             targetAttendance &&
-            account.targetAttendance
+            account.targetAttendance !== undefined
         ) {
 
             targetAttendance.value =
                 account.targetAttendance;
+
+        }
+
+
+        /* -------------------------------------------------
+           RESTORE START DATE
+           ------------------------------------------------- */
+
+        if (
+            startDate &&
+            account.startDate
+        ) {
+
+            startDate.value =
+                account.startDate;
+
+        }
+
+
+        /* -------------------------------------------------
+           RESTORE END DATE
+           ------------------------------------------------- */
+
+        if (
+            endDate &&
+            account.endDate
+        ) {
+
+            endDate.value =
+                account.endDate;
 
         }
 
@@ -313,6 +574,10 @@ function setupAvatarPage() {
         );
 
 
+    /* -----------------------------------------------------
+       If this isn't the avatar/profile page, stop.
+       ----------------------------------------------------- */
+
     if (avatars.length === 0) {
 
         return;
@@ -320,7 +585,9 @@ function setupAvatarPage() {
     }
 
 
-    /* Load saved account */
+    /* -----------------------------------------------------
+       LOAD SAVED ACCOUNT
+       ----------------------------------------------------- */
 
     const savedAccount =
         localStorage.getItem(
@@ -331,8 +598,8 @@ function setupAvatarPage() {
     if (!savedAccount) {
 
         /*
-         * User somehow opened profile
-         * without creating an account.
+         * User opened profile without
+         * creating an account.
          */
 
         return;
@@ -346,9 +613,9 @@ function setupAvatarPage() {
             JSON.parse(savedAccount);
 
 
-        /* ================================================
+        /* =================================================
            SHOW ACCOUNT INFORMATION
-           ================================================ */
+           ================================================= */
 
         const profileName =
             document.getElementById(
@@ -381,9 +648,9 @@ function setupAvatarPage() {
         }
 
 
-        /* ================================================
+        /* =================================================
            RESTORE PREVIOUS AVATAR
-           ================================================ */
+           ================================================= */
 
         const savedProfile =
             localStorage.getItem(
@@ -418,9 +685,9 @@ function setupAvatarPage() {
     }
 
 
-    /* ================================================
+    /* =====================================================
        AVATAR CLICK
-       ================================================ */
+       ===================================================== */
 
     avatars.forEach(function (avatar) {
 
@@ -464,7 +731,9 @@ function selectAvatar(element) {
     }
 
 
-    /* Remove old selection */
+    /* =====================================================
+       REMOVE OLD SELECTION
+       ===================================================== */
 
     document
         .querySelectorAll(
@@ -479,14 +748,18 @@ function selectAvatar(element) {
         });
 
 
-    /* Add new selection */
+    /* =====================================================
+       ADD NEW SELECTION
+       ===================================================== */
 
     element.classList.add(
         "selected-avatar"
     );
 
 
-    /* Update preview */
+    /* =====================================================
+       UPDATE PREVIEW
+       ===================================================== */
 
     const profileImage =
         document.getElementById(
@@ -502,7 +775,9 @@ function selectAvatar(element) {
     }
 
 
-    /* Save selected avatar immediately */
+    /* =====================================================
+       LOAD ACCOUNT
+       ===================================================== */
 
     const savedAccount =
         localStorage.getItem(
@@ -523,20 +798,75 @@ function selectAvatar(element) {
             JSON.parse(savedAccount);
 
 
+        /* =================================================
+           PRESERVE EXISTING ATTENDANCE
+           ================================================= */
+
+        const savedProfile =
+            localStorage.getItem(
+                ATTENDX_PROFILE_KEY
+            );
+
+
+        let oldAttendance = {};
+
+
+        if (savedProfile) {
+
+            try {
+
+                const previousProfile =
+                    JSON.parse(savedProfile);
+
+
+                oldAttendance =
+                    previousProfile.attendance || {};
+
+            } catch (error) {
+
+                oldAttendance = {};
+
+            }
+
+        }
+
+
+        /* =================================================
+           CREATE UPDATED PROFILE
+           ================================================= */
+
         const profile = {
 
-            name: account.name,
+            name:
+                account.name,
 
             className:
                 account.className,
 
+            currentAttendance:
+                account.currentAttendance,
+
             targetAttendance:
                 account.targetAttendance,
 
-            avatar: avatar
+            startDate:
+                account.startDate,
+
+            endDate:
+                account.endDate,
+
+            avatar:
+                avatar,
+
+            attendance:
+                oldAttendance
 
         };
 
+
+        /* =================================================
+           SAVE PROFILE
+           ================================================= */
 
         localStorage.setItem(
 
@@ -629,8 +959,10 @@ function proceedToCalculator() {
             "Please create your AttendX account first."
         );
 
+
         window.location.href =
             "login.html";
+
 
         return;
 
@@ -649,6 +981,7 @@ function proceedToCalculator() {
             "Please choose an avatar first."
         );
 
+
         return;
 
     }
@@ -660,26 +993,35 @@ function proceedToCalculator() {
             JSON.parse(savedProfile);
 
 
+        /* -------------------------------------------------
+           CHECK AVATAR
+           ------------------------------------------------- */
+
         if (!profile.avatar) {
 
             alert(
                 "Please choose an avatar first."
             );
 
+
             return;
 
         }
 
 
-        /* Everything is ready */
+        /* -------------------------------------------------
+           EVERYTHING IS READY
+           GO TO CALENDAR
+           ------------------------------------------------- */
 
         window.location.href =
-            "calculator.html";
+            "calendar.html";
 
 
     } catch (error) {
 
         console.error(error);
+
 
         alert(
             "Something went wrong. Please choose your avatar again."
@@ -709,15 +1051,27 @@ function logout() {
     }
 
 
+    /* -----------------------------------------------------
+       DELETE ACCOUNT
+       ----------------------------------------------------- */
+
     localStorage.removeItem(
         ATTENDX_ACCOUNT_KEY
     );
 
 
+    /* -----------------------------------------------------
+       DELETE PROFILE + ATTENDANCE
+       ----------------------------------------------------- */
+
     localStorage.removeItem(
         ATTENDX_PROFILE_KEY
     );
 
+
+    /* -----------------------------------------------------
+       RETURN TO LOGIN
+       ----------------------------------------------------- */
 
     window.location.href =
         "login.html";
