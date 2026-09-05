@@ -35,7 +35,16 @@ function createAccount() {
     const targetAttendance =
         document.getElementById("targetAttendance");
 
-    const message =
+     const currentAttendance =
+        document.getElementById("currentAttendance");
+
+     const startDate =
+        document.getElementById("startDate");
+
+     const endDate =
+        document.getElementById("endDate");
+   
+     const message =
         document.getElementById("accountMessage");
 
 
