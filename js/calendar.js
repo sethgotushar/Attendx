@@ -1,48 +1,35 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // =========================================================
-    // ATTENDX CALENDAR
-    // =========================================================
-
     const PROFILE_KEY = "attendxProfile";
 
+    let profile = null;
 
     // =========================================================
     // LOAD PROFILE
     // =========================================================
 
-    let profile = null;
-
     try {
-
-        const saved =
-            localStorage.getItem(PROFILE_KEY);
+        const saved = localStorage.getItem(PROFILE_KEY);
 
         if (saved) {
             profile = JSON.parse(saved);
         }
 
     } catch (error) {
-
         console.error(
             "AttendX: Profile could not be loaded.",
             error
         );
     }
 
-
-    // No profile
+    // If no profile exists, go to login/setup
     if (!profile) {
-
-        window.location.href =
-            "login.html";
-
+        window.location.href = "login.html";
         return;
     }
 
-
     // =========================================================
-    // ATTENDANCE STORAGE
+    // MAKE SURE ATTENDANCE OBJECT EXISTS
     // =========================================================
 
     if (
@@ -50,13 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
         typeof profile.attendance !== "object" ||
         Array.isArray(profile.attendance)
     ) {
-
         profile.attendance = {};
     }
 
-
     // =========================================================
-    // ELEMENTS
+    // GET HTML ELEMENTS
     // =========================================================
 
     const calendarName =
@@ -104,26 +89,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const editPeriodButton =
         document.getElementById("editPeriodButton");
 
-
     // =========================================================
-    // PROFILE DISPLAY
+    // DISPLAY PROFILE INFORMATION
     // =========================================================
 
     if (calendarName) {
-
         calendarName.textContent =
             profile.name || "Student";
     }
 
-
     if (calendarClass) {
-
         calendarClass.textContent =
             profile.className
                 ? `Class ${profile.className}`
                 : "Class";
     }
-
 
     if (calendarTarget) {
 
@@ -134,13 +114,11 @@ document.addEventListener("DOMContentLoaded", () => {
             `${Number.isFinite(target) ? target : 75}%`;
     }
 
-
     if (calendarAvatar) {
 
         calendarAvatar.src =
             profile.avatar ||
             "assets/avatars/avatar1.png";
-
 
         calendarAvatar.onerror = () => {
 
@@ -148,7 +126,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 "assets/avatars/avatar1.png";
         };
     }
-
 
     // =========================================================
     // DATE FUNCTIONS
@@ -160,20 +137,15 @@ document.addEventListener("DOMContentLoaded", () => {
             typeof value !== "string" ||
             !value
         ) {
-
             return null;
         }
-
 
         const parts =
             value.split("-");
 
-
         if (parts.length !== 3) {
-
             return null;
         }
-
 
         const year =
             Number(parts[0]);
@@ -184,16 +156,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const day =
             Number(parts[2]);
 
-
         if (
             !Number.isInteger(year) ||
             !Number.isInteger(month) ||
             !Number.isInteger(day)
         ) {
-
             return null;
         }
-
 
         const date =
             new Date(
@@ -202,17 +171,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 day
             );
 
-
-        // Validate date
+        // Prevent invalid dates such as 31/02/2026
         if (
             date.getFullYear() !== year ||
             date.getMonth() !== month - 1 ||
             date.getDate() !== day
         ) {
-
             return null;
         }
-
 
         return date;
     }
@@ -225,16 +191,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 date.getDate()
             ).padStart(2, "0");
 
-
         const month =
             String(
                 date.getMonth() + 1
             ).padStart(2, "0");
 
-
         const year =
             date.getFullYear();
-
 
         return `${day}/${month}/${year}`;
     }
@@ -272,9 +235,8 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-
     // =========================================================
-    // START / END DATE
+    // GET START AND END DATE
     // =========================================================
 
     const startDate =
@@ -282,7 +244,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const endDate =
         parseDate(profile.endDate);
-
 
     if (!startDate || !endDate) {
 
@@ -296,7 +257,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-
     if (startDate > endDate) {
 
         alert(
@@ -309,7 +269,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-
     // =========================================================
     // DISPLAY ACADEMIC PERIOD
     // =========================================================
@@ -319,7 +278,6 @@ document.addEventListener("DOMContentLoaded", () => {
         calendarPeriod.textContent =
             `${formatDate(startDate)} — ${formatDate(endDate)}`;
     }
-
 
     // =========================================================
     // SAVE PROFILE
@@ -339,14 +297,13 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
 
             console.error(
-                "AttendX: Could not save.",
+                "AttendX: Could not save profile.",
                 error
             );
 
             return false;
         }
     }
-
 
     // =========================================================
     // GENERATE CALENDAR
@@ -358,9 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-
         monthsContainer.innerHTML = "";
-
 
         const startYear =
             startDate.getFullYear();
@@ -374,18 +329,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const endMonth =
             endDate.getMonth();
 
-
         let year =
             startYear;
 
         let month =
             startMonth;
 
-
-        // =====================================================
-        // GENERATE MONTHS ONLY UNTIL END DATE
-        // =====================================================
-
+        // Go month by month
         while (
             year < endYear ||
             (
@@ -394,10 +344,9 @@ document.addEventListener("DOMContentLoaded", () => {
             )
         ) {
 
-
-            // -------------------------------------------------
+            // =================================================
             // MONTH CARD
-            // -------------------------------------------------
+            // =================================================
 
             const monthCard =
                 document.createElement("section");
@@ -406,9 +355,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 "month-card";
 
 
-            // -------------------------------------------------
+            // =================================================
             // MONTH HEADER
-            // -------------------------------------------------
+            // =================================================
 
             const monthHeader =
                 document.createElement("div");
@@ -436,9 +385,9 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-            // -------------------------------------------------
+            // =================================================
             // WEEKDAYS
-            // -------------------------------------------------
+            // =================================================
 
             const weekdays =
                 document.createElement("div");
@@ -482,9 +431,9 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-            // -------------------------------------------------
+            // =================================================
             // DAYS GRID
-            // -------------------------------------------------
+            // =================================================
 
             const daysGrid =
                 document.createElement("div");
@@ -493,7 +442,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 "calendar-grid";
 
 
-            // Number of days
             const daysInMonth =
                 new Date(
                     year,
@@ -502,14 +450,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 ).getDate();
 
 
-            // Selected range limits
+            // Default entire month
             let firstDay = 1;
 
             let lastDay =
                 daysInMonth;
 
 
-            // First month
+            // If this is starting month,
+            // don't show dates before start date
             if (
                 year === startYear &&
                 month === startMonth
@@ -520,7 +469,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            // Last month
+            // If this is ending month,
+            // don't show dates after end date
             if (
                 year === endYear &&
                 month === endMonth
@@ -531,9 +481,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            // -------------------------------------------------
-            // FIRST WEEKDAY
-            // -------------------------------------------------
+            // =================================================
+            // FIND WEEKDAY OF FIRST AVAILABLE DATE
+            // =================================================
 
             const startingWeekday =
                 new Date(
@@ -543,10 +493,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ).getDay();
 
 
-            // -------------------------------------------------
-            // EMPTY CELLS
-            // -------------------------------------------------
-
+            // Add empty cells before first date
             for (
                 let i = 0;
                 i < startingWeekday;
@@ -565,9 +512,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            // -------------------------------------------------
-            // CREATE DAYS
-            // -------------------------------------------------
+            // =================================================
+            // CREATE EACH DATE
+            // =================================================
 
             for (
                 let day = firstDay;
@@ -583,10 +530,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
-                // ---------------------------------------------
-                // BUTTON
-                // ---------------------------------------------
-
+                // Create date button
                 const dayCell =
                     document.createElement("button");
 
@@ -600,9 +544,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     key;
 
 
-                // ---------------------------------------------
-                // NUMBER
-                // ---------------------------------------------
+                // =================================================
+                // DATE NUMBER
+                // =================================================
 
                 const number =
                     document.createElement("span");
@@ -614,9 +558,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     day;
 
 
-                // ---------------------------------------------
-                // CROSS
-                // ---------------------------------------------
+                // =================================================
+                // ATTENDANCE CROSS
+                // =================================================
 
                 const cross =
                     document.createElement("span");
@@ -637,19 +581,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
 
-                // ---------------------------------------------
-                // RESTORE SAVED STATUS
-                // ---------------------------------------------
-
+                // Apply saved status
                 applyStatus(
                     dayCell,
                     profile.attendance[key]
                 );
 
 
-                // ---------------------------------------------
-                // CLICK
-                // ---------------------------------------------
+                // =================================================
+                // CLICK DATE
+                // =================================================
 
                 dayCell.addEventListener(
                     "click",
@@ -681,24 +622,21 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-            // -------------------------------------------------
-            // NEXT MONTH
-            // -------------------------------------------------
-
+            // Move to next month
             month++;
 
 
             if (month > 11) {
 
                 month = 0;
+
                 year++;
             }
         }
     }
 
-
     // =========================================================
-    // APPLY STATUS
+    // APPLY ATTENDANCE STATUS TO DATE
     // =========================================================
 
     function applyStatus(
@@ -710,7 +648,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-
+        // Remove all previous statuses
         dayCell.classList.remove(
             "present",
             "absent",
@@ -718,21 +656,22 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
+        // Apply selected status
         if (status === "present") {
 
             dayCell.classList.add(
                 "present"
             );
-        }
 
+        }
 
         else if (status === "absent") {
 
             dayCell.classList.add(
                 "absent"
             );
-        }
 
+        }
 
         else if (status === "holiday") {
 
@@ -741,7 +680,6 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         }
     }
-
 
     // =========================================================
     // DATE MENU
@@ -803,14 +741,12 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         }
 
-
         selectedDateKey =
             null;
     }
 
-
     // =========================================================
-    // CLOSE BUTTON
+    // CLOSE MENU BUTTON
     // =========================================================
 
     if (closeDateMenu) {
@@ -821,9 +757,8 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-
     // =========================================================
-    // CLICK OUTSIDE
+    // CLOSE MENU BY CLICKING BACKDROP
     // =========================================================
 
     if (dateMenu) {
@@ -842,7 +777,6 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-
     // =========================================================
     // ATTENDANCE OPTIONS
     // =========================================================
@@ -860,7 +794,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "click",
                 () => {
 
-                    // No selected date
+                    // No date selected
                     if (!selectedDateKey) {
                         return;
                     }
@@ -870,10 +804,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         button.dataset.status;
 
 
-                    // -------------------------------------------------
-                    // VALID STATUS
-                    // -------------------------------------------------
-
+                    // Valid statuses
                     const validStatuses = [
                         "present",
                         "absent",
@@ -892,9 +823,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    // -------------------------------------------------
-                    // NONE = CLEAR DATE
-                    // -------------------------------------------------
+                    // =================================================
+                    // NONE / CLEAR
+                    // =================================================
 
                     if (
                         status === "none"
@@ -906,10 +837,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     }
 
-
-                    // -------------------------------------------------
-                    // PRESENT / ABSENT / HOLIDAY
-                    // -------------------------------------------------
+                    // =================================================
+                    // SAVE STATUS
+                    // =================================================
 
                     else {
 
@@ -919,9 +849,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    // -------------------------------------------------
-                    // SAVE IMMEDIATELY
-                    // -------------------------------------------------
+                    // =================================================
+                    // SAVE TO LOCAL STORAGE
+                    // =================================================
 
                     const saved =
                         saveProfile();
@@ -937,9 +867,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    // -------------------------------------------------
-                    // UPDATE CROSS
-                    // -------------------------------------------------
+                    // =================================================
+                    // UPDATE DATE CELL
+                    // =================================================
 
                     const selectedCell =
                         document.querySelector(
@@ -958,26 +888,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    // -------------------------------------------------
-                    // UPDATE NUMBERS
-                    // -------------------------------------------------
+                    // =================================================
+                    // UPDATE STATISTICS
+                    // =================================================
 
                     updateStatistics();
 
 
-                    // -------------------------------------------------
-                    // CLOSE MENU
-                    // -------------------------------------------------
-
+                    // Close menu
                     closeMenu();
                 }
             );
         }
     );
 
-
     // =========================================================
-    // STATISTICS
+    // UPDATE ATTENDANCE STATISTICS
     // =========================================================
 
     function updateStatistics() {
@@ -989,26 +915,9 @@ document.addEventListener("DOMContentLoaded", () => {
         let totalHoliday = 0;
 
 
-        let currentPresent = 0;
-
-        let currentAbsent = 0;
-
-
-        // Today's date
-        const today =
-            new Date();
-
-        today.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
-
-        // =====================================================
-        // READ SAVED ATTENDANCE
-        // =====================================================
+        // =================================================
+        // COUNT SAVED ATTENDANCE
+        // =================================================
 
         Object.entries(
             profile.attendance
@@ -1019,12 +928,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     parseDate(key);
 
 
+                // Ignore invalid date keys
                 if (!attendanceDate) {
                     return;
                 }
 
 
-                // Only selected academic period
+                // Only count dates inside academic period
                 if (
                     attendanceDate < startDate ||
                     attendanceDate > endDate
@@ -1034,10 +944,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                // ------------------------------------------------
-                // TOTAL COUNTS
-                // ------------------------------------------------
-
+                // Present
                 if (
                     status === "present"
                 ) {
@@ -1046,6 +953,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
+                // Absent
                 else if (
                     status === "absent"
                 ) {
@@ -1054,48 +962,33 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
+                // Holiday
                 else if (
                     status === "holiday"
                 ) {
 
                     totalHoliday++;
                 }
-
-
-                // ------------------------------------------------
-                // CURRENT ATTENDANCE
-                // ------------------------------------------------
-
-                if (
-                    attendanceDate <= today
-                ) {
-
-                    if (
-                        status === "present"
-                    ) {
-
-                        currentPresent++;
-                    }
-
-
-                    else if (
-                        status === "absent"
-                    ) {
-
-                        currentAbsent++;
-                    }
-                }
             }
         );
 
 
-        // =====================================================
-        // CALCULATE PERCENTAGE
-        // =====================================================
+        // =================================================
+        // CORRECT ATTENDANCE FORMULA
+        // =================================================
+        //
+        // Attendance %
+        // =
+        // Present
+        // ----------------------------- × 100
+        // Present + Absent
+        //
+        // Holidays are NOT included.
+        // =================================================
 
         const workingDays =
-            currentPresent +
-            currentAbsent;
+            totalPresent +
+            totalAbsent;
 
 
         let percentage = 0;
@@ -1105,15 +998,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             percentage =
                 (
-                    currentPresent /
+                    totalPresent /
                     workingDays
                 ) * 100;
         }
 
 
-        // =====================================================
-        // UPDATE UI
-        // =====================================================
+        // =================================================
+        // UPDATE PRESENT
+        // =================================================
 
         if (presentCount) {
 
@@ -1122,12 +1015,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
+        // =================================================
+        // UPDATE ABSENT
+        // =================================================
+
         if (absentCount) {
 
             absentCount.textContent =
                 totalAbsent;
         }
 
+
+        // =================================================
+        // UPDATE HOLIDAY
+        // =================================================
 
         if (holidayCount) {
 
@@ -1136,13 +1037,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
+        // =================================================
+        // UPDATE PERCENTAGE
+        // =================================================
+
         if (currentPercentage) {
 
             currentPercentage.textContent =
                 `${percentage.toFixed(1)}%`;
         }
     }
-
 
     // =========================================================
     // EDIT PROFILE
@@ -1160,6 +1064,9 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
+    // =========================================================
+    // EDIT ACADEMIC PERIOD
+    // =========================================================
 
     if (editPeriodButton) {
 
@@ -1173,9 +1080,8 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-
     // =========================================================
-    // START
+    // INITIALIZE CALENDAR
     // =========================================================
 
     generateCalendar();
