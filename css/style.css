@@ -2783,3 +2783,63 @@ body.about-page footer {
 .empty-day {
     pointer-events: none;
 }
+
+/* =========================================
+   ATTENDX - CROSS FIX
+   ========================================= */
+
+.day-cross {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+
+    transform: translate(-50%, -50%) scale(0.5) !important;
+
+    opacity: 0 !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    border: none !important;
+    background: none !important;
+
+    font-size: 22px !important;
+    line-height: 1 !important;
+    font-weight: 700 !important;
+
+    pointer-events: none !important;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease !important;
+}
+
+/* Remove any old + shaped pseudo-elements */
+.day-cross::before,
+.day-cross::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Show the cross */
+.calendar-day.present .day-cross,
+.calendar-day.absent .day-cross,
+.calendar-day.holiday .day-cross {
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+}
+
+/* Present = blue */
+.calendar-day.present .day-cross {
+    color: var(--sky) !important;
+}
+
+/* Absent = red */
+.calendar-day.absent .day-cross {
+    color: #ff4f67 !important;
+}
+
+/* Holiday = dark */
+.calendar-day.holiday .day-cross {
+    color: #555d66 !important;
+}
