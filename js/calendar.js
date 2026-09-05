@@ -1,517 +1,367 @@
 document.addEventListener("DOMContentLoaded", () => {
-
     const PROFILE_KEY = "attendxProfile";
 
-    let profile = JSON.parse(
-        localStorage.getItem(PROFILE_KEY)
-    );
+    const profile = JSON.parse(localStorage.getItem(PROFILE_KEY));
 
-    /*
-     * If no profile exists,
-     * send the user to profile setup.
-     */
-
+    // No profile → go back to login
     if (!profile) {
         window.location.href = "login.html";
         return;
     }
 
-
-    /*
-     * Make sure attendance storage exists.
-     */
-
+    // Make sure attendance storage exists
     if (!profile.attendance) {
         profile.attendance = {};
-        saveProfile();
     }
 
+    // --------------------------------------------------
+    // ELEMENTS
+    // --------------------------------------------------
 
-    const monthsContainer =
-        document.getElementById("monthsContainer");
+    const calendarName = document.getElementById("calendarName");
+    const calendarClass = document.getElementById("calendarClass");
+    const calendarTarget = document.getElementById("calendarTarget");
+    const calendarAvatar = document.getElementById("calendarAvatar");
+    const calendarPeriod = document.getElementById("calendarPeriod");
 
-    const dateMenu =
-        document.getElementById("dateMenu");
+    const monthsContainer = document.getElementById("monthsContainer");
 
-    const selectedDateText =
-        document.getElementById("selectedDateText");
+    const presentCount = document.getElementById("presentCount");
+    const absentCount = document.getElementById("absentCount");
+    const holidayCount = document.getElementById("holidayCount");
+    const currentPercentage = document.getElementById("currentPercentage");
 
+    const dateMenu = document.getElementById("dateMenu");
+    const selectedDateText = document.getElementById("selectedDateText");
+    const closeDateMenu = document.getElementById("closeDateMenu");
 
-    /*
-     * SAVE PROFILE
-     */
+    const editProfileButton = document.getElementById("editProfileButton");
+    const editPeriodButton = document.getElementById("editPeriodButton");
 
-    function saveProfile() {
+    // --------------------------------------------------
+    // PROFILE INFORMATION
+    // --------------------------------------------------
 
-        localStorage.setItem(
-            PROFILE_KEY,
-            JSON.stringify(profile)
-        );
+    calendarName.textContent = profile.name || "Student";
 
+    calendarClass.textContent = profile.className
+        ? `Class ${profile.className}`
+        : "Class";
+
+    calendarTarget.textContent =
+        `${Number(profile.targetAttendance || 75)}%`;
+
+    if (profile.avatar) {
+        calendarAvatar.src = profile.avatar;
+    } else {
+        calendarAvatar.src = "assets/avatars/avatar1.png";
     }
 
+    // --------------------------------------------------
+    // DATE HELPERS
+    // --------------------------------------------------
 
-    /*
-     * DISPLAY PROFILE
-     */
+    function parseDate(dateString) {
+        if (!dateString) return null;
 
-    function displayProfile() {
-
-        document.getElementById("calendarName").textContent =
-            profile.name || "Student";
-
-        document.getElementById("calendarClass").textContent =
-            profile.className || "Class";
-
-        document.getElementById("calendarTarget").textContent =
-            `${Number(profile.targetAttendance || 75)}%`;
-
-        document.getElementById("calendarAvatar").src =
-            profile.avatar || "assets/avatars/avatar1.png";
-
-        if (profile.startDate && profile.endDate) {
-
-            const start =
-                formatDisplayDate(profile.startDate);
-
-            const end =
-                formatDisplayDate(profile.endDate);
-
-            document.getElementById("calendarPeriod").textContent =
-                `${start} — ${end}`;
-
-        }
-
-    }
-
-
-    /*
-     * DD/MM/YYYY DISPLAY
-     */
-
-    function formatDisplayDate(dateString) {
-
-        const date = parseDate(dateString);
-
-        if (!date) return dateString;
-
-        return String(date.getDate()).padStart(2, "0")
-            + "/"
-            + String(date.getMonth() + 1).padStart(2, "0")
-            + "/"
-            + date.getFullYear();
-
-    }
-
-
-    /*
-     * IMPORTANT:
-     * Parse date without timezone problems.
-     */
-
-    function parseDate(value) {
-
-        if (!value) return null;
-
-        const parts = value.split("-");
+        const parts = dateString.split("-");
 
         if (parts.length !== 3) return null;
 
-        return new Date(
-            Number(parts[0]),
-            Number(parts[1]) - 1,
-            Number(parts[2])
-        );
+        const year = Number(parts[0]);
+        const month = Number(parts[1]);
+        const day = Number(parts[2]);
 
+        return new Date(year, month - 1, day);
     }
 
+    function formatDate(date) {
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
 
-    /*
-     * DATE → YYYY-MM-DD
-     */
-
-    function dateKey(date) {
-
-        return date.getFullYear()
-            + "-"
-            + String(date.getMonth() + 1).padStart(2, "0")
-            + "-"
-            + String(date.getDate()).padStart(2, "0");
-
+        return `${day}/${month}/${year}`;
     }
 
+    function formatMonthYear(year, month) {
+        const date = new Date(year, month, 1);
 
-    /*
-     * MONTH NAMES
-     */
+        return date.toLocaleString("en-US", {
+            month: "long",
+            year: "numeric"
+        });
+    }
 
-    const monthNames = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-    ];
+    function dateKey(year, month, day) {
+        return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
 
+    // --------------------------------------------------
+    // GET SELECTED DATE RANGE
+    // --------------------------------------------------
 
-    /*
-     * WEEKDAYS
-     */
+    const startDate = parseDate(profile.startDate);
+    const endDate = parseDate(profile.endDate);
 
-    const weekdayNames = [
-        "Sun",
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat"
-    ];
+    // If dates are missing, use a safe default
+    if (!startDate || !endDate) {
+        alert("Please set your academic start and end dates.");
 
+        window.location.href = "login.html?edit=true";
+        return;
+    }
 
-    /*
-     * GENERATE COMPLETE CALENDAR
-     */
+    // Make sure start isn't after end
+    if (startDate > endDate) {
+        alert("Start date cannot be after the end date.");
+
+        window.location.href = "login.html?edit=true";
+        return;
+    }
+
+    // Show selected period
+    calendarPeriod.textContent =
+        `${formatDate(startDate)} — ${formatDate(endDate)}`;
+
+    // --------------------------------------------------
+    // CALENDAR GENERATION
+    // --------------------------------------------------
 
     function generateCalendar() {
-
         monthsContainer.innerHTML = "";
 
-        const startDate =
-            parseDate(profile.startDate);
+        const startYear = startDate.getFullYear();
+        const startMonth = startDate.getMonth();
 
-        const endDate =
-            parseDate(profile.endDate);
+        const endYear = endDate.getFullYear();
+        const endMonth = endDate.getMonth();
 
+        let currentYear = startYear;
+        let currentMonth = startMonth;
 
-        if (!startDate || !endDate) {
-
-            monthsContainer.innerHTML = `
-                <div class="calendar-error">
-                    Please set your academic period
-                    in Edit Profile.
-                </div>
-            `;
-
-            return;
-        }
-
-
-        /*
-         * Start at the first day of the
-         * starting month.
-         */
-
-        let currentMonth =
-            new Date(
-                startDate.getFullYear(),
-                startDate.getMonth(),
-                1
-            );
-
-
-        /*
-         * Continue until the ending month.
-         */
-
-        while (currentMonth <= endDate) {
-
-            createMonth(currentMonth, startDate, endDate);
-
-            currentMonth.setMonth(
-                currentMonth.getMonth() + 1
-            );
-
-        }
-
-    }
-
-
-    /*
-     * CREATE ONE MONTH
-     */
-
-    function createMonth(monthDate, startDate, endDate) {
-
-        const year =
-            monthDate.getFullYear();
-
-        const month =
-            monthDate.getMonth();
-
-
-        const monthSection =
-            document.createElement("section");
-
-        monthSection.className =
-            "calendar-month";
-
-
-        /*
-         * MONTH HEADER
-         */
-
-        const header =
-            document.createElement("div");
-
-        header.className =
-            "month-header";
-
-
-        header.innerHTML = `
-            <div>
-                <p class="eyebrow">
-                    ${year}
-                </p>
-
-                <h2>
-                    ${monthNames[month]}
-                </h2>
-            </div>
-        `;
-
-
-        monthSection.appendChild(header);
-
-
-        /*
-         * WEEKDAY HEADER
-         */
-
-        const weekdayRow =
-            document.createElement("div");
-
-        weekdayRow.className =
-            "weekday-row";
-
-
-        weekdayNames.forEach(day => {
-
-            const element =
-                document.createElement("div");
-
-            element.textContent = day;
-
-            weekdayRow.appendChild(element);
-
-        });
-
-
-        monthSection.appendChild(weekdayRow);
-
-
-        /*
-         * CALENDAR GRID
-         */
-
-        const grid =
-            document.createElement("div");
-
-        grid.className =
-            "calendar-grid";
-
-
-        /*
-         * First day of month
-         */
-
-        const firstDay =
-            new Date(year, month, 1);
-
-        const startingWeekday =
-            firstDay.getDay();
-
-
-        /*
-         * Empty cells before first date.
-         */
-
-        for (
-            let i = 0;
-            i < startingWeekday;
-            i++
+        // Continue ONLY until the month containing endDate
+        while (
+            currentYear < endYear ||
+            (
+                currentYear === endYear &&
+                currentMonth <= endMonth
+            )
         ) {
 
-            const empty =
-                document.createElement("div");
+            const monthSection = document.createElement("section");
+            monthSection.className = "month-card";
 
-            empty.className =
-                "calendar-day empty";
+            // ------------------------------------------
+            // MONTH HEADER
+            // ------------------------------------------
 
-            grid.appendChild(empty);
+            const monthHeader = document.createElement("div");
+            monthHeader.className = "month-header";
 
-        }
+            const monthTitle = document.createElement("h2");
+            monthTitle.textContent =
+                formatMonthYear(currentYear, currentMonth);
 
+            monthHeader.appendChild(monthTitle);
+            monthSection.appendChild(monthHeader);
 
-        /*
-         * Number of days in month.
-         *
-         * This automatically handles
-         * February and leap years.
-         */
+            // ------------------------------------------
+            // WEEKDAY HEADER
+            // ------------------------------------------
 
-        const daysInMonth =
-            new Date(
-                year,
-                month + 1,
-                0
-            ).getDate();
+            const weekdays = document.createElement("div");
+            weekdays.className = "calendar-weekdays";
 
+            const weekdayNames = [
+                "SUN",
+                "MON",
+                "TUE",
+                "WED",
+                "THU",
+                "FRI",
+                "SAT"
+            ];
 
-        /*
-         * CREATE EVERY DAY
-         */
+            weekdayNames.forEach(dayName => {
+                const day = document.createElement("div");
 
-        for (
-            let day = 1;
-            day <= daysInMonth;
-            day++
-        ) {
+                day.className = "weekday";
+                day.textContent = dayName;
 
-            const date =
-                new Date(
-                    year,
-                    month,
-                    day
-                );
+                weekdays.appendChild(day);
+            });
 
+            monthSection.appendChild(weekdays);
 
-            /*
-             * Don't display dates outside
-             * user's selected period.
-             */
+            // ------------------------------------------
+            // DAYS GRID
+            // ------------------------------------------
 
+            const daysGrid = document.createElement("div");
+            daysGrid.className = "calendar-grid";
+
+            // Number of days in this month
+            const daysInMonth =
+                new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // First weekday of this month
+            const firstWeekday =
+                new Date(currentYear, currentMonth, 1).getDay();
+
+            // Empty spaces before day 1
+            for (let i = 0; i < firstWeekday; i++) {
+                const emptyDay = document.createElement("div");
+
+                emptyDay.className =
+                    "calendar-day empty-day";
+
+                daysGrid.appendChild(emptyDay);
+            }
+
+            // ------------------------------------------
+            // EXACT START / END LIMITS
+            // ------------------------------------------
+
+            let firstDay = 1;
+            let lastDay = daysInMonth;
+
+            // FIRST MONTH
             if (
-                date < startDate ||
-                date > endDate
+                currentYear === startYear &&
+                currentMonth === startMonth
             ) {
-
-                const outside =
-                    document.createElement("div");
-
-                outside.className =
-                    "calendar-day empty";
-
-                grid.appendChild(outside);
-
-                continue;
-
+                firstDay = startDate.getDate();
             }
 
-
-            const key =
-                dateKey(date);
-
-
-            const cell =
-                document.createElement("button");
-
-            cell.className =
-                "calendar-day";
-
-            cell.dataset.date =
-                key;
-
-
-            /*
-             * DATE NUMBER
-             */
-
-            const number =
-                document.createElement("span");
-
-            number.className =
-                "day-number";
-
-            number.textContent =
-                day;
-
-
-            cell.appendChild(number);
-
-
-            /*
-             * COLORED CROSS
-             */
-
-            const cross =
-                document.createElement("span");
-
-            cross.className =
-                "day-cross";
-
-
-            cell.appendChild(cross);
-
-
-            /*
-             * RESTORE SAVED STATUS
-             */
-
-            const status =
-                profile.attendance[key];
-
-
-            if (status) {
-
-                cell.classList.add(
-                    `status-${status}`
-                );
-
+            // LAST MONTH
+            if (
+                currentYear === endYear &&
+                currentMonth === endMonth
+            ) {
+                lastDay = endDate.getDate();
             }
 
+            // ------------------------------------------
+            // CREATE ONLY VALID DAYS
+            // ------------------------------------------
 
-            /*
-             * CLICK DATE
-             */
+            for (let dayNumber = firstDay;
+                 dayNumber <= lastDay;
+                 dayNumber++) {
 
-            cell.addEventListener(
-                "click",
-                () => {
-
-                    openDateMenu(
-                        date,
-                        key
+                const key =
+                    dateKey(
+                        currentYear,
+                        currentMonth,
+                        dayNumber
                     );
 
-                }
-            );
+                const dayCell =
+                    document.createElement("button");
 
+                dayCell.type = "button";
+                dayCell.className = "calendar-day";
 
-            grid.appendChild(cell);
+                dayCell.dataset.date = key;
 
+                // Date number
+                const number =
+                    document.createElement("span");
+
+                number.className = "day-number";
+                number.textContent = dayNumber;
+
+                dayCell.appendChild(number);
+
+                // Attendance cross
+                const cross =
+                    document.createElement("span");
+
+                cross.className = "day-cross";
+                cross.textContent = "✕";
+
+                dayCell.appendChild(cross);
+
+                // Apply saved status
+                applyStatus(
+                    dayCell,
+                    profile.attendance[key]
+                );
+
+                // Click date
+                dayCell.addEventListener("click", () => {
+                    openDateMenu(
+                        key,
+                        currentYear,
+                        currentMonth,
+                        dayNumber
+                    );
+                });
+
+                daysGrid.appendChild(dayCell);
+            }
+
+            monthSection.appendChild(daysGrid);
+
+            monthsContainer.appendChild(monthSection);
+
+            // ------------------------------------------
+            // MOVE TO NEXT MONTH
+            // ------------------------------------------
+
+            currentMonth++;
+
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
         }
-
-
-        monthSection.appendChild(grid);
-
-        monthsContainer.appendChild(monthSection);
-
     }
 
+    // --------------------------------------------------
+    // APPLY ATTENDANCE STATUS
+    // --------------------------------------------------
 
-    /*
-     * OPEN DATE MENU
-     */
+    function applyStatus(dayCell, status) {
+        dayCell.classList.remove(
+            "present",
+            "absent",
+            "holiday"
+        );
+
+        if (status === "present") {
+            dayCell.classList.add("present");
+        }
+
+        if (status === "absent") {
+            dayCell.classList.add("absent");
+        }
+
+        if (status === "holiday") {
+            dayCell.classList.add("holiday");
+        }
+    }
+
+    // --------------------------------------------------
+    // DATE MENU
+    // --------------------------------------------------
 
     let selectedDateKey = null;
 
-
-    function openDateMenu(date, key) {
-
+    function openDateMenu(
+        key,
+        year,
+        month,
+        day
+    ) {
         selectedDateKey = key;
 
+        const selectedDate =
+            new Date(year, month, day);
 
         selectedDateText.textContent =
-            date.toLocaleDateString(
-                "en-IN",
+            selectedDate.toLocaleDateString(
+                "en-US",
                 {
                     weekday: "long",
                     day: "numeric",
@@ -520,110 +370,88 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             );
 
-
         dateMenu.classList.add("show");
-
     }
 
+    function closeMenu() {
+        dateMenu.classList.remove("show");
+        selectedDateKey = null;
+    }
 
-    /*
-     * CLOSE DATE MENU
-     */
+    // Close button
+    if (closeDateMenu) {
+        closeDateMenu.addEventListener(
+            "click",
+            closeMenu
+        );
+    }
 
-    document
-        .getElementById("closeDateMenu")
-        .addEventListener(
+    // Click outside menu
+    if (dateMenu) {
+        dateMenu.addEventListener("click", event => {
+            if (event.target === dateMenu) {
+                closeMenu();
+            }
+        });
+    }
+
+    // --------------------------------------------------
+    // ATTENDANCE BUTTONS
+    // --------------------------------------------------
+
+    const attendanceOptions =
+        document.querySelectorAll(
+            ".attendance-option"
+        );
+
+    attendanceOptions.forEach(button => {
+
+        button.addEventListener(
             "click",
             () => {
 
-                dateMenu.classList.remove("show");
+                if (!selectedDateKey) {
+                    return;
+                }
 
-            }
-        );
+                const status =
+                    button.dataset.status;
 
+                // Save status
+                profile.attendance[
+                    selectedDateKey
+                ] = status;
 
-    /*
-     * CLICK OUTSIDE MENU
-     */
+                // Save profile
+                localStorage.setItem(
+                    PROFILE_KEY,
+                    JSON.stringify(profile)
+                );
 
-    dateMenu.addEventListener(
-        "click",
-        event => {
-
-            if (event.target === dateMenu) {
-
-                dateMenu.classList.remove("show");
-
-            }
-
-        }
-    );
-
-
-    /*
-     * PRESENT / ABSENT / HOLIDAY
-     */
-
-    document
-        .querySelectorAll(
-            ".attendance-option"
-        )
-        .forEach(button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    if (!selectedDateKey) return;
-
-
-                    const status =
-                        button.dataset.status;
-
-
-                    /*
-                     * SAVE STATUS
-                     */
-
-                    profile.attendance[
-                        selectedDateKey
-                    ] = status;
-
-
-                    saveProfile();
-
-
-                    /*
-                     * Close popup
-                     */
-
-                    dateMenu.classList.remove(
-                        "show"
+                // Find selected day
+                const selectedCell =
+                    document.querySelector(
+                        `.calendar-day[data-date="${selectedDateKey}"]`
                     );
 
-
-                    /*
-                     * Rebuild calendar
-                     */
-
-                    generateCalendar();
-
-
-                    /*
-                     * Update statistics
-                     */
-
-                    updateStatistics();
-
+                if (selectedCell) {
+                    applyStatus(
+                        selectedCell,
+                        status
+                    );
                 }
-            );
 
-        });
+                // Update statistics
+                updateStatistics();
 
+                closeMenu();
+            }
+        );
+    });
 
-    /*
-     * CALCULATE STATISTICS
-     */
+    // --------------------------------------------------
+    // ATTENDANCE STATISTICS
+    // --------------------------------------------------
 
     function updateStatistics() {
 
@@ -631,134 +459,87 @@ document.addEventListener("DOMContentLoaded", () => {
         let absent = 0;
         let holiday = 0;
 
+        const today = new Date();
 
-        const today =
-            new Date();
-
-        today.setHours(
-            23, 59, 59, 999
-        );
-
+        // Remove time from today
+        today.setHours(0, 0, 0, 0);
 
         Object.entries(
             profile.attendance
-        ).forEach(
-            ([key, status]) => {
+        ).forEach(([key, status]) => {
 
-                const date =
-                    parseDate(key);
+            const attendanceDate =
+                parseDate(key);
 
-
-                /*
-                 * Don't count future dates
-                 * in CURRENT attendance.
-                 */
-
-                if (date > today) return;
-
-
-                if (status === "present") {
-
-                    present++;
-
-                }
-
-                else if (status === "absent") {
-
-                    absent++;
-
-                }
-
-                else if (status === "holiday") {
-
-                    holiday++;
-
-                }
-
+            if (!attendanceDate) {
+                return;
             }
-        );
 
+            // Future dates should NOT affect
+            // current attendance
+            if (attendanceDate > today) {
+                return;
+            }
 
-        /*
-         * Holidays are NOT attendance days.
-         */
+            if (status === "present") {
+                present++;
+            }
 
-        const attendanceDays =
+            else if (status === "absent") {
+                absent++;
+            }
+
+            else if (status === "holiday") {
+                holiday++;
+            }
+        });
+
+        const totalWorkingDays =
             present + absent;
-
 
         let percentage = 0;
 
-
-        if (attendanceDays > 0) {
-
+        if (totalWorkingDays > 0) {
             percentage =
-                (present / attendanceDays) * 100;
-
+                (present / totalWorkingDays) * 100;
         }
 
+        presentCount.textContent = present;
+        absentCount.textContent = absent;
+        holidayCount.textContent = holiday;
 
-        document.getElementById(
-            "presentCount"
-        ).textContent = present;
-
-
-        document.getElementById(
-            "absentCount"
-        ).textContent = absent;
-
-
-        document.getElementById(
-            "holidayCount"
-        ).textContent = holiday;
-
-
-        document.getElementById(
-            "currentPercentage"
-        ).textContent =
-            percentage.toFixed(2) + "%";
-
+        currentPercentage.textContent =
+            `${percentage.toFixed(1)}%`;
     }
 
+    // --------------------------------------------------
+    // EDIT PROFILE
+    // --------------------------------------------------
 
-    /*
-     * EDIT PROFILE
-     */
-
-    document
-        .getElementById("editProfileButton")
-        .addEventListener(
+    if (editProfileButton) {
+        editProfileButton.addEventListener(
             "click",
             () => {
-
                 window.location.href =
                     "login.html?edit=true";
-
             }
         );
+    }
 
-
-    document
-        .getElementById("editPeriodButton")
-        .addEventListener(
+    if (editPeriodButton) {
+        editPeriodButton.addEventListener(
             "click",
             () => {
-
                 window.location.href =
                     "login.html?edit=true";
-
             }
         );
+    }
 
-
-    /*
-     * INITIAL LOAD
-     */
-
-    displayProfile();
+    // --------------------------------------------------
+    // INITIALIZE
+    // --------------------------------------------------
 
     generateCalendar();
-
     updateStatistics();
-
 });
