@@ -1916,3 +1916,779 @@ body.about-page footer {
     }
 
 }
+
+
+/* =========================================================
+   ATTENDX CALENDAR
+   ========================================================= */
+
+.calendar-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(105,217,255,0.10),
+            transparent 45%
+        ),
+        var(--black);
+}
+
+
+/* MAIN CONTAINER */
+
+.calendar-container {
+    width: min(1250px, 94%);
+    margin: 0 auto;
+    padding: 80px 0 80px;
+}
+
+
+/* =========================================================
+   PROFILE HEADER
+   ========================================================= */
+
+.calendar-profile {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+
+    padding: 28px;
+
+    margin-bottom: 20px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 24px;
+
+    background: rgba(255,255,255,0.045);
+
+    backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 20px 70px rgba(0,0,0,0.30);
+}
+
+
+.profile-avatar-button {
+    width: 82px;
+    height: 82px;
+
+    padding: 0;
+
+    border-radius: 50%;
+
+    border: 2px solid var(--sky);
+
+    background: transparent;
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 0 25px rgba(105,217,255,0.25);
+
+    transition: 0.3s;
+}
+
+
+.profile-avatar-button:hover {
+    transform: scale(1.06);
+
+    box-shadow:
+        0 0 40px rgba(105,217,255,0.45);
+}
+
+
+.profile-avatar-button img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.calendar-profile-info {
+    flex: 1;
+}
+
+
+.calendar-profile-info h1 {
+    margin: 4px 0;
+
+    font-size: clamp(30px, 4vw, 48px);
+}
+
+
+.calendar-profile-info p:last-child {
+    color: var(--muted);
+
+    margin: 0;
+}
+
+
+.calendar-target {
+    text-align: right;
+}
+
+
+.calendar-target span {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 12px;
+
+    letter-spacing: 2px;
+}
+
+
+.calendar-target strong {
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--sky);
+
+    font-size: 32px;
+}
+
+
+/* =========================================================
+   PERIOD
+   ========================================================= */
+
+.calendar-period {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 35px;
+
+    padding: 18px 22px;
+
+    border-radius: 18px;
+
+    border: 1px solid var(--border);
+
+    background: rgba(255,255,255,0.035);
+}
+
+
+.calendar-period span {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+}
+
+
+.calendar-period strong {
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--white);
+}
+
+
+.calendar-edit-btn {
+    border: 1px solid var(--border);
+
+    background: rgba(105,217,255,0.08);
+
+    color: var(--sky);
+
+    padding: 10px 16px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   MONTH
+   ========================================================= */
+
+.calendar-month {
+    margin-bottom: 45px;
+
+    padding: 25px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.055),
+            rgba(255,255,255,0.018)
+        );
+
+    backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 20px 70px rgba(0,0,0,0.22);
+}
+
+
+.month-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+
+.month-header h2 {
+    margin: 0;
+
+    font-size: 30px;
+}
+
+
+.weekday-row,
+.calendar-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, minmax(0, 1fr));
+
+    gap: 8px;
+}
+
+
+.weekday-row {
+    margin-bottom: 8px;
+}
+
+
+.weekday-row div {
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: 12px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+
+    padding: 8px 0;
+}
+
+
+/* =========================================================
+   CALENDAR DAY
+   ========================================================= */
+
+.calendar-day {
+    position: relative;
+
+    min-height: 90px;
+
+    border: 1px solid rgba(105,217,255,0.10);
+
+    border-radius: 14px;
+
+    background: rgba(255,255,255,0.025);
+
+    color: var(--white);
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.calendar-day:hover {
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(105,217,255,0.45);
+
+    background:
+        rgba(105,217,255,0.07);
+}
+
+
+.calendar-day.empty {
+    visibility: hidden;
+
+    pointer-events: none;
+}
+
+
+.day-number {
+    position: absolute;
+
+    top: 10px;
+    left: 12px;
+
+    z-index: 3;
+
+    font-size: 15px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   THE ONLY STATUS SYMBOL:
+   COLORED CROSS
+   ========================================================= */
+
+.day-cross {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    width: 30px;
+    height: 30px;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(45deg);
+
+    opacity: 0;
+
+    transition:
+        opacity 0.25s ease,
+        filter 0.25s ease;
+}
+
+
+.day-cross::before,
+.day-cross::after {
+    content: "";
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    width: 4px;
+    height: 32px;
+
+    border-radius: 4px;
+
+    background: currentColor;
+
+    transform:
+        translate(-50%, -50%);
+}
+
+
+.day-cross::after {
+    transform:
+        translate(-50%, -50%)
+        rotate(90deg);
+}
+
+
+/* =========================================================
+   PRESENT = BLUE CROSS
+   ========================================================= */
+
+.calendar-day.status-present
+.day-cross {
+
+    opacity: 1;
+
+    color: var(--sky);
+
+    filter:
+        drop-shadow(
+            0 0 7px
+            rgba(105,217,255,0.75)
+        );
+}
+
+
+/* =========================================================
+   ABSENT = RED CROSS
+   ========================================================= */
+
+.calendar-day.status-absent
+.day-cross {
+
+    opacity: 1;
+
+    color: #ff405c;
+
+    filter:
+        drop-shadow(
+            0 0 7px
+            rgba(255,64,92,0.75)
+        );
+}
+
+
+/* =========================================================
+   HOLIDAY = BLACK CROSS
+   ========================================================= */
+
+.calendar-day.status-holiday
+.day-cross {
+
+    opacity: 1;
+
+    color: #000000;
+
+    filter:
+        drop-shadow(
+            0 0 2px rgba(255,255,255,0.25)
+        );
+}
+
+
+/* =========================================================
+   DATE MENU
+   ========================================================= */
+
+.date-menu {
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        rgba(0,0,0,0.65);
+
+    backdrop-filter: blur(10px);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transition: 0.25s;
+
+    z-index: 9999;
+}
+
+
+.date-menu.show {
+    opacity: 1;
+
+    visibility: visible;
+}
+
+
+.date-menu-box {
+    position: relative;
+
+    width: min(420px, 100%);
+
+    padding: 30px;
+
+    border-radius: 24px;
+
+    border: 1px solid var(--border);
+
+    background:
+        linear-gradient(
+            145deg,
+            #091721,
+            #050b12
+        );
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,0.55);
+}
+
+
+.date-menu-box h3 {
+    margin: 8px 0 25px;
+
+    font-size: 25px;
+}
+
+
+.close-date-menu {
+    position: absolute;
+
+    top: 14px;
+    right: 16px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: var(--muted);
+
+    font-size: 28px;
+
+    cursor: pointer;
+}
+
+
+.attendance-options {
+    display: grid;
+
+    gap: 10px;
+}
+
+
+.attendance-option {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    width: 100%;
+
+    padding: 15px;
+
+    border-radius: 13px;
+
+    background: rgba(255,255,255,0.04);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    color: var(--white);
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    transition: 0.2s;
+}
+
+
+.attendance-option span {
+    font-size: 22px;
+}
+
+
+.present-option:hover {
+    border-color: var(--sky);
+
+    color: var(--sky);
+}
+
+
+.absent-option:hover {
+    border-color: #ff405c;
+
+    color: #ff405c;
+}
+
+
+.holiday-option:hover {
+    border-color: #888;
+
+    color: #aaa;
+}
+
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.attendance-summary {
+    margin-top: 60px;
+}
+
+
+.summary-title {
+    margin-bottom: 25px;
+}
+
+
+.summary-title h2 {
+    margin: 8px 0 0;
+
+    font-size: 35px;
+}
+
+
+.summary-title h2 span {
+    color: var(--sky);
+}
+
+
+.summary-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+}
+
+
+.summary-card {
+    padding: 25px;
+
+    border-radius: 20px;
+
+    border: 1px solid var(--border);
+
+    background:
+        rgba(255,255,255,0.04);
+
+    text-align: center;
+}
+
+
+.summary-card span {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+}
+
+
+.summary-card strong {
+    display: block;
+
+    margin-top: 8px;
+
+    font-size: 35px;
+
+    color: var(--white);
+}
+
+
+.percentage-card strong {
+    color: var(--sky);
+
+    text-shadow:
+        0 0 20px
+        rgba(105,217,255,0.35);
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .calendar-container {
+        padding-top: 45px;
+    }
+
+
+    .calendar-profile {
+        flex-wrap: wrap;
+
+        padding: 20px;
+    }
+
+
+    .calendar-target {
+        width: 100%;
+
+        text-align: left;
+
+        padding-top: 10px;
+
+        border-top:
+            1px solid var(--border);
+    }
+
+
+    .calendar-period {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .calendar-month {
+        padding: 15px;
+
+        border-radius: 18px;
+    }
+
+
+    .weekday-row,
+    .calendar-grid {
+        gap: 4px;
+    }
+
+
+    .calendar-day {
+        min-height: 58px;
+
+        border-radius: 9px;
+    }
+
+
+    .day-number {
+        top: 6px;
+
+        left: 7px;
+
+        font-size: 12px;
+    }
+
+
+    .day-cross {
+        width: 24px;
+
+        height: 24px;
+    }
+
+
+    .day-cross::before,
+    .day-cross::after {
+        width: 3px;
+
+        height: 25px;
+    }
+
+
+    .summary-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .summary-card {
+        padding: 18px 10px;
+    }
+
+
+    .summary-card strong {
+        font-size: 27px;
+    }
+
+
+    .weekday-row div {
+        font-size: 9px;
+    }
+
+}
