@@ -2692,3 +2692,94 @@ body.about-page footer {
     }
 
 }
+
+
+/* =========================================
+   ATTENDX CALENDAR FIX
+   ========================================= */
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.weekday {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: center;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+}
+
+.calendar-day {
+    position: relative;
+    min-height: 58px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    cursor: pointer;
+}
+
+.day-number {
+    position: relative;
+    z-index: 2;
+}
+
+.day-cross {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s ease;
+}
+
+.calendar-day.present .day-cross,
+.calendar-day.absent .day-cross,
+.calendar-day.holiday .day-cross {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.calendar-day.present .day-cross {
+    color: var(--sky);
+}
+
+.calendar-day.absent .day-cross {
+    color: #ff4f67;
+}
+
+.calendar-day.holiday .day-cross {
+    color: #555d66;
+}
+
+.calendar-day {
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease;
+}
+
+.calendar-day:not(.empty-day):hover {
+    transform: translateY(-2px);
+}
+
+.empty-day {
+    pointer-events: none;
+}
