@@ -2843,3 +2843,11 @@ body.about-page footer {
 .calendar-day.holiday .day-cross {
     color: #555d66 !important;
 }
+
+.none-option {
+    border-color: rgba(255,255,255,0.15);
+}
+
+.none-option:hover {
+    border-color: rgba(255,255,255,0.35);
+}
