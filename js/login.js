@@ -61,15 +61,23 @@ function createAccount() {
     }
 
 
-    const name =
-        username.value.trim();
+   const name =
+    username.value.trim();
 
-    const studentClass =
-        className.value.trim();
+const studentClass =
+    className.value.trim();
 
-    const target =
-        Number(targetAttendance.value);
+const current =
+    Number(currentAttendance.value);
 
+const target =
+    Number(targetAttendance.value);
+
+const periodStart =
+    startDate.value;
+
+const periodEnd =
+    endDate.value;
 
     /* =====================================================
        VALIDATION
