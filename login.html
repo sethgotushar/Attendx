@@ -60,6 +60,8 @@ your attendance preferences on this device.
 <div class="form-grid">
 
 
+<!-- NAME -->
+
 <div class="input-group full">
 
 <label>Your Name</label>
@@ -72,6 +74,8 @@ placeholder="Enter your name">
 </div>
 
 
+<!-- CLASS -->
+
 <div class="input-group">
 
 <label>Class</label>
@@ -83,6 +87,24 @@ placeholder="Example: Class 12">
 
 </div>
 
+
+<!-- CURRENT ATTENDANCE -->
+
+<div class="input-group">
+
+<label>Current Attendance</label>
+
+<input
+id="currentAttendance"
+type="number"
+placeholder="Example: 78"
+min="0"
+max="100">
+
+</div>
+
+
+<!-- TARGET ATTENDANCE -->
 
 <div class="input-group">
 
@@ -98,6 +120,36 @@ max="100">
 </div>
 
 
+<!-- START DATE -->
+
+<div class="input-group">
+
+<label>Period Start</label>
+
+<input
+id="startDate"
+type="date"
+value="2026-04-01">
+
+</div>
+
+
+<!-- END DATE -->
+
+<div class="input-group">
+
+<label>Period End</label>
+
+<input
+id="endDate"
+type="date"
+value="2026-12-31">
+
+</div>
+
+
+<!-- BUTTON -->
+
 <div class="full">
 
 <button
@@ -112,6 +164,7 @@ Create My Profile →
 
 
 </div>
+
 
 <div
 id="accountMessage"
