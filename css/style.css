@@ -2851,3 +2851,81 @@ body.about-page footer {
 .none-option:hover {
     border-color: rgba(255,255,255,0.35);
 }
+
+
+/* =========================================================
+   CALENDAR ANIME LIVE BACKGROUND
+   ========================================================= */
+
+body.calendar-page {
+    position: relative;
+    overflow-x: hidden;
+    background: var(--black);
+}
+
+body.calendar-page::before {
+    content: "";
+    position: fixed;
+    inset: -5%;
+    z-index: -3;
+
+    background-image:
+        linear-gradient(
+            rgba(5, 8, 13, 0.45),
+            rgba(5, 8, 13, 0.62)
+        ),
+        url("../assets/calendar-bg.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    animation: calendarAnimeZoom 18s ease-in-out infinite alternate;
+
+    pointer-events: none;
+}
+
+body.calendar-page::after {
+    content: "";
+    position: fixed;
+    inset: -10%;
+    z-index: -2;
+
+    background:
+        radial-gradient(
+            circle at 20% 30%,
+            rgba(105, 217, 255, 0.14),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 80% 70%,
+            rgba(22, 141, 204, 0.12),
+            transparent 38%
+        );
+
+    animation: calendarAnimeMove 12s ease-in-out infinite alternate;
+
+    pointer-events: none;
+}
+
+@keyframes calendarAnimeZoom {
+    0% {
+        transform: scale(1);
+        background-position: 48% 50%;
+    }
+
+    100% {
+        transform: scale(1.08);
+        background-position: 53% 47%;
+    }
+}
+
+@keyframes calendarAnimeMove {
+    0% {
+        transform: translate3d(-2%, -1%, 0);
+    }
+
+    100% {
+        transform: translate3d(2%, 1%, 0);
+    }
+}
