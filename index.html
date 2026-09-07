@@ -322,5 +322,21 @@ At<span>T</span>endX
         assistantButton.textContent = "⚠️ Voice unavailable";
     });
 </script>
+<audio id="jarvisWelcome" autoplay preload="auto">
+    <source src="./assets/jarvis-welcome.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    window.addEventListener("load", () => {
+        const voice = document.getElementById("jarvisWelcome");
+
+        voice.volume = 0.65;
+
+        voice.play().catch(error => {
+            console.log("Autoplay blocked by browser:", error);
+        });
+    });
+</script>
+    
 </body>
 </html>
